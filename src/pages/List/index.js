@@ -1,87 +1,114 @@
-import React, { useEffect, useState } from "react";
-import {
-  Backdrop,
-  Box,
-  Button,
-  Fade,
-  Grid,
-  Modal,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
-import bg from "../../assets/img/bg.webm";
-import ModalCore from "../../components/ModalCore";
+import React from "react";
+import { Box, Button } from "@mui/material";
 
-const Home = () => {
-  const [list, setList] = useState([]);
+import Layout from "../../components/Layout";
+import { useSelector } from "react-redux";
+import Home from "../Home";
+import { get, set } from "lockr";
+import services from "../../core/services";
+import { button } from "./styles";
 
-  useEffect(() => {
-    const result = [];
-    for (let i = 1; i < 1001; i++) {
-      result.push({
-        name: i,
-        cliced: false,
-      });
+const { setGameData, setCurrentUser } = services;
+
+const winNumber = get("0S0_Q_21S2HA3RN");
+
+const List = () => {
+  const { isSession, gameData, currentUser } = useSelector(
+    (state) => state.data
+  );
+
+  console.log("currentUser", currentUser, winNumber);
+
+  const handleClickButton = (wn) => {
+    console.log(wn, winNumber);
+    if (wn === winNumber) {
+      setGameData(null);
+      return;
     }
-    setList(result);
-  }, []);
+    const result = gameData.map((item) => {
+      if (item.name === wn) {
+        return {
+          ...item,
+          cliced: true,
+          won: wn === winNumber,
+        };
+      }
+      return item;
+    });
+    const count = currentUser?.count - 1;
+    const currentUserResult =
+      !!count && count > 0 ? { ...currentUser, count } : null;
+    setGameData(result);
+    setCurrentUser(currentUserResult);
+    set("gameData", result);
+    set("currentUser", currentUserResult);
+  };
 
-  console.log("list", list);
+  if (!!!isSession) return <Home />;
 
   return (
-    <Box
-      sx={{
-        "& #video": {
-          width: "100vw",
-          height: "100vh",
-          objectFit: "cover",
-          position: "fixed",
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0,
-          zIndex: -1,
-        },
-      }}
-    >
-      <video autoPlay muted loop id="video">
-        <source src={bg} type="video/mp4" />
-      </video>
-      <Grid container spacing={2} flexWrap={"wrap"}>
-        {list.map((item, index) => (
-          <Grid item xs={1} textAlign={"center"} key={`key-list-${item.name}`}>
+    <Layout>
+      <Box
+        mt={1}
+        sx={{
+          pointerEvents: !!currentUser ? "initial" : "none",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            marginRight: -3,
+            pl: 4,
+            pr: 4,
+          }}
+        >
+          {gameData?.map((item) => (
             <Button
-              disabled={item === 30}
+              // disabled={item === 30}
               variant={"contained"}
               size={"large"}
-              color={item.cliced ? "success" : "primary"}
+              color={
+                item.cliced ? (item.won ? "success" : "warning") : "primary"
+              }
               onClick={() => {
-                console.log("item", item);
-                setList((prev) => {
-                  return prev.map((item, i) => {
-                    if (i === index) {
-                      return {
-                        ...item,
-                        cliced: true,
-                      };
-                    }
-                    return item;
-                  });
-                });
+                handleClickButton(item.name);
               }}
-              sx={{
-                minWidth: 100,
-                fontSize: 28,
-              }}
+              sx={button}
             >
               {item.name}
             </Button>
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
+          ))}
+        </Box>
+        {/*<Grid container spacing={2} flexWrap={"wrap"}>
+          {gameData?.map((item) => (
+            <Grid
+              item
+              xs={2}
+              textAlign={"center"}
+              key={`key-list-${item.name}`}
+            >
+              <Button
+                // disabled={item === 30}
+                variant={"contained"}
+                size={"large"}
+                color={
+                  item.cliced ? (item.won ? "success" : "warning") : "primary"
+                }
+                onClick={() => {
+                  handleClickButton(item.name);
+                }}
+                sx={button}
+              >
+                {item.name}
+              </Button>
+            </Grid>
+          ))}
+        </Grid>*/}
+      </Box>
+    </Layout>
   );
 };
 
-export default Home;
+export default List;

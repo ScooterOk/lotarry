@@ -1,0 +1,150 @@
+//noinspection CssInvalidAtRule
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 90deg;
+  inherits: true;
+}
+//noinspection CssInvalidAtRule
+@property --gradX {
+  syntax: "<percentage>";
+  initial-value: 50%;
+  inherits: true;
+}
+//noinspection CssInvalidAtRule
+@property --gradY {
+  syntax: "<percentage>";
+  initial-value: 0%;
+  inherits: true;
+}
+
+:root {
+  --d: 2500ms;
+  --angle: 90deg;
+  --gradX: 100%;
+  --gradY: 50%;
+  --c1: rgba(168, 239, 255, 1);
+  --c2: rgba(168, 239, 255, 0.1);
+}
+
+.header {
+  position: fixed;
+  left: 56px;
+  right: 56px;
+  top: 24px;
+  z-index: 100;
+  .wrapper {
+    position: relative;
+    background: linear-gradient(7deg, #1e389a, #a3117d, #a20383);
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 24px;
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      left: -2px;
+      top: -2px;
+      background: linear-gradient(
+        45deg,
+        #fb0094,
+        #4000ff,
+        #4bad4b,
+        #ffffa3,
+        #ff0000,
+        #fb0094,
+        #0000ff,
+        #335633,
+        #8f8f68,
+        #ff0000
+      );
+      background-size: 400%;
+      width: calc(100% + 4px);
+      height: calc(100% + 4px);
+      z-index: -1;
+      animation: steam 50s linear infinite;
+    }
+    &::after {
+      filter: blur(50px);
+    }
+  }
+
+  .logo {
+    font-size: 36px;
+    font-weight: bold;
+    background: linear-gradient(7deg, #0000ff, #ffc0cb);
+    border-radius: 50%;
+    padding: 30px 20px;
+    box-shadow: 3px 1px 12px 9px #e5e5ee;
+
+    color: #fff;
+    margin-left: 10px;
+    // animation-duration: 5s;
+    // animation-name: slidein;
+    animation: move-logo 2.5s infinite ease-in-out;
+  }
+  .counter {
+    text-align: center;
+    color: #fff;
+    b {
+      display: block;
+    }
+    span {
+      display: block;
+      box-shadow: 3px 1px 12px 9px #e5e5ee;
+      margin-top: 10px;
+      padding: 5px;
+      animation: move-counter 4s infinite ease-in;
+    }
+  }
+  .form {
+    width: 300px;
+  }
+}
+
+@keyframes steam {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 800% 0;
+  }
+}
+
+@keyframes move-counter {
+  from {
+    box-shadow: 3px 1px 12px 9px #e5e5ee;
+  }
+
+  to {
+    box-shadow: 3px 1px 12px 10px #e5e5ee;
+  }
+
+  50% {
+    box-shadow: 3px 1px 25px 0px #ffc0cb;
+  }
+}
+
+@keyframes move-logo {
+  from {
+    box-shadow: 3px 1px 12px 9px #e5e5ee;
+  }
+
+  to {
+    box-shadow: 3px 1px 12px 9px #e5e5ee;
+  }
+
+  50% {
+    box-shadow: 3px 1px 25px 0px #ffc0cb;
+  }
+}
+
+@keyframes borderRotate {
+  100% {
+    --angle: 420deg;
+  }
+}

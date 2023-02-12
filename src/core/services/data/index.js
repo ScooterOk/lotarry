@@ -1,9 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-const { REACT_APP_API_URL } = process.env;
+import { get } from "lockr";
 
 const initialState = {
-  isSession: false,
+  isSession: get("isSession") || false,
+  isGame: false,
+  currentUser: get("currentUser") || null,
+  gameData: get("gameData") || null,
 };
 
 export const dataSlice = createSlice({
@@ -12,6 +14,12 @@ export const dataSlice = createSlice({
   reducers: {
     setIsSession: (state, payload) => {
       state.isSession = payload;
+    },
+    setGameData: (state, { payload }) => {
+      state.gameData = payload;
+    },
+    setCurrentUser: (state, { payload }) => {
+      state.currentUser = payload;
     },
   },
 });
