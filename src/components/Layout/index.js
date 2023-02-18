@@ -17,7 +17,8 @@ const styles = {
     zIndex: 0,
   },
   "& main": {
-    background: "linear-gradient(134deg, #1e389a, #a3117d, #a20383)",
+    background:
+      "linear-gradient(185deg, rgba(58,29,95,1) 0%, rgba(13,15,64,1) 100%)",
     position: "relative",
     zIndex: 1,
     maxWidth: "calc(100% - 56px - 56px)",
@@ -25,7 +26,6 @@ const styles = {
     height: "calc(100vh - 120px)",
     overflowY: "auto",
     overflowX: "hidden",
-    paddingTop: 8,
     paddingBottom: 3,
     marginTop: 15,
   },

@@ -1,0 +1,294 @@
+.won {
+  //min-height: calc(100vh - 120px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 1;
+  h2 {
+    margin-bottom: 48px;
+    color: #fff;
+    opacity: 0.7;
+    font-weight: 900;
+    font-size: 38px;
+    text-align: center;
+  }
+}
+
+.firework,
+.firework::before,
+.firework::after {
+  --top: 60vh;
+  content: "";
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.5vmin;
+  aspect-ratio: 1;
+  background:
+          /* random backgrounds */ radial-gradient(
+        circle,
+        #ff0 0.2vmin,
+        #0000 0
+      )
+      50% 00%,
+    radial-gradient(circle, #ff0 0.3vmin, #0000 0) 00% 50%,
+    radial-gradient(circle, #ff0 0.5vmin, #0000 0) 50% 99%,
+    radial-gradient(circle, #ff0 0.2vmin, #0000 0) 99% 50%,
+    radial-gradient(circle, #ff0 0.3vmin, #0000 0) 80% 90%,
+    radial-gradient(circle, #ff0 0.5vmin, #0000 0) 95% 90%,
+    radial-gradient(circle, #ff0 0.5vmin, #0000 0) 10% 60%,
+    radial-gradient(circle, #ff0 0.2vmin, #0000 0) 31% 80%,
+    radial-gradient(circle, #ff0 0.3vmin, #0000 0) 80% 10%,
+    radial-gradient(circle, #ff0 0.2vmin, #0000 0) 90% 23%,
+    radial-gradient(circle, #ff0 0.3vmin, #0000 0) 45% 20%,
+    radial-gradient(circle, #ff0 0.5vmin, #0000 0) 13% 24%;
+  background-size: 0.5vmin 0.5vmin;
+  background-repeat: no-repeat;
+  animation: firework 2s infinite;
+}
+
+.firework::before {
+  transform: translate(-50%, -50%) rotate(25deg) !important;
+}
+
+.firework::after {
+  transform: translate(-50%, -50%) rotate(-37deg) !important;
+}
+
+.f1,
+.f1::before,
+.f1::after {
+  left: 10%;
+  animation-delay: 500ms;
+  top: 30%;
+}
+.f2,
+.f2::before,
+.f2::after {
+  left: 20%;
+  animation-delay: 300ms;
+  top: 50%;
+}
+.f3,
+.f3::before,
+.f3::after {
+  left: 30%;
+  animation-delay: 1200ms;
+  top: 80%;
+}
+.f4,
+.f4::before,
+.f4::after {
+  left: 50%;
+  animation-delay: 700ms;
+  top: 60%;
+}
+.f5,
+.f5::before,
+.f5::after {
+  left: 65%;
+  animation-delay: 400ms;
+  top: 40%;
+}
+.f6,
+.f6::before,
+.f6::after {
+  left: 80%;
+  animation-delay: 1000ms;
+  top: 55%;
+}
+.f7,
+.f7::before,
+.f7::after {
+  left: 90%;
+  animation-delay: 100ms;
+  top: 70%;
+}
+
+.jackpot {
+  //color: #fff;
+  font-size: 140px;
+  font-family: "Luckiest Guy", cursive;
+  text-transform: uppercase;
+  background-size: cover;
+
+  //background: url("https://images.unsplash.com/photo-1634474559500-c934afa9f01f?crop=entropy&cs=srgb&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYzNzA4OTcyNg&ixlib=rb-1.2.1&q=85")
+  //  center / cover;
+  //animation: background-text-animation 30s ease infinite;
+  -webkit-background-clip: text;
+  padding: 15px;
+  margin-bottom: 60px;
+  animation: letterSpacing 30s ease-out;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  span {
+    display: inline-block;
+    //mix-blend-mode: multiply;
+    text-shadow: -5px 5px 0px black, -10px 10px 0px white, -20px 20px 0px purple;
+    animation: safeColor 0.5s ease-in-out infinite;
+    animation-direction: alternate;
+    &:nth-child(2) {
+      animation-direction: reverse;
+    }
+    &:nth-child(3) {
+      animation-name: safeColor2;
+    }
+    &:nth-child(4) {
+      animation-name: safeColor2;
+      animation-direction: reverse;
+    }
+    &:nth-child(5) {
+      animation-name: safeColor3;
+    }
+    &:nth-child(6) {
+      animation-name: safeColor3;
+      animation-direction: reverse;
+    }
+    &:nth-child(7) {
+      animation-name: safeColor4;
+    }
+    &:nth-child(8) {
+      animation-name: safeColor4;
+      animation-direction: reverse;
+    }
+    &::before {
+      content: attr(data-text);
+      font-size: inherit;
+      text-transform: inherit;
+      font-weight: inherit;
+      position: absolute;
+      z-index: -1;
+      color: #ffd9f7;
+      filter: blur(7px);
+      transform: scale(1.12);
+    }
+  }
+}
+
+.svg {
+  fill: transparent;
+  stroke: #fff;
+  animation: safe 6s ease-in-out infinite;
+  width: 300px;
+  height: 300px;
+}
+
+@keyframes letterSpacing {
+  0% {
+    letter-spacing: 3px;
+  }
+  100% {
+    letter-spacing: 20px;
+    //animation-play-state: paused;
+  }
+}
+
+@keyframes safe {
+  0% {
+    stroke: #f5da9f;
+  }
+  25% {
+    stroke: #fcafaf;
+  }
+  50% {
+    stroke: #fdc1f8;
+  }
+  100% {
+    stroke: #fccc69;
+  }
+}
+
+@keyframes safeColor {
+  0% {
+    color: #f5da9f;
+  }
+  25% {
+    color: #fcafaf;
+  }
+  50% {
+    color: #fdc1f8;
+  }
+  100% {
+    color: #fccc69;
+  }
+}
+@keyframes safeColor2 {
+  0% {
+    color: #fcafaf;
+  }
+  25% {
+    color: #f5da9f;
+  }
+  50% {
+    color: #fccc69;
+  }
+  100% {
+    color: #fdc1f8;
+  }
+}
+@keyframes safeColor3 {
+  0% {
+    color: #fdc1f8;
+  }
+  25% {
+    color: #fccc69;
+  }
+  50% {
+    color: #f5da9f;
+  }
+  100% {
+    color: #fcafaf;
+  }
+}
+@keyframes safeColor4 {
+  0% {
+    color: #fdc1f8;
+  }
+  25% {
+    color: #fccc69;
+  }
+  50% {
+    color: #f5da9f;
+  }
+  100% {
+    color: #fcafaf;
+  }
+}
+
+@keyframes background-text-animation {
+  0% {
+    background-position: left 0px top 50%;
+  }
+  50% {
+    background-position: left 700px top 50%;
+  }
+  100% {
+    background-position: left 0px top 50%;
+  }
+}
+
+@keyframes firework {
+  0% {
+    transform: translate(-50%, 40vh);
+    width: 0.5vmin;
+    opacity: 1;
+  }
+  50% {
+    width: 0.5vmin;
+    opacity: 1;
+  }
+  100% {
+    width: 65vmin;
+    opacity: 0;
+  }
+}

@@ -1,4 +1,5 @@
 import React from "react";
+import InputMask from "react-input-mask";
 import {
   Box,
   Button,
@@ -98,15 +99,24 @@ const StartGameForm = ({ open, handleClose }) => {
                 ),
               }}
               render={({ field }) => (
-                <TextField
-                  {...field}
-                  error={!!errors.phone}
-                  label="Ведіть телефон"
-                  fullWidth
-                  variant={"outlined"}
-                  size={"small"}
-                  helperText={!!errors.phone && errors?.phone?.message}
-                />
+                <InputMask
+                  mask="+38(999)999 99 99"
+                  value={field.value}
+                  onChange={field.onChange}
+                  alwaysShowMask={false}
+                >
+                  {(inputProps) => (
+                    <TextField
+                      {...inputProps}
+                      error={!!errors.phone}
+                      label="Ведіть телефон"
+                      fullWidth
+                      variant={"outlined"}
+                      size={"small"}
+                      helperText={!!errors.phone && errors?.phone?.message}
+                    />
+                  )}
+                </InputMask>
               )}
             />
 
@@ -122,15 +132,25 @@ const StartGameForm = ({ open, handleClose }) => {
                 ),
               }}
               render={({ field }) => (
-                <TextField
-                  {...field}
-                  error={!!errors.count}
-                  label="Ведіть кількість спроб"
-                  fullWidth
-                  variant={"outlined"}
-                  size={"small"}
-                  helperText={!!errors.count && errors?.count?.message}
-                />
+                <InputMask
+                  mask="999"
+                  value={field.value}
+                  onChange={field.onChange}
+                  alwaysShowMask={false}
+                  maskChar={" "}
+                >
+                  {(inputProps) => (
+                    <TextField
+                      {...inputProps}
+                      error={!!errors.count}
+                      label="Ведіть кількість спроб"
+                      fullWidth
+                      variant={"outlined"}
+                      size={"small"}
+                      helperText={!!errors.count && errors?.count?.message}
+                    />
+                  )}
+                </InputMask>
               )}
             />
           </Stack>

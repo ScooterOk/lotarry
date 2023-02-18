@@ -34,7 +34,8 @@
   z-index: 100;
   .wrapper {
     position: relative;
-    background: linear-gradient(7deg, #1e389a, #a3117d, #a20383);
+    //background: linear-gradient(7deg, #1e389a, #a3117d, #a20383);
+    background-color: #0f1145;
     height: 100px;
     display: flex;
     align-items: center;
@@ -63,7 +64,7 @@
       width: calc(100% + 4px);
       height: calc(100% + 4px);
       z-index: -1;
-      animation: steam 50s linear infinite;
+      //animation: steam 50s linear infinite;
     }
     &::after {
       filter: blur(50px);
@@ -87,6 +88,8 @@
   .counter {
     text-align: center;
     color: #fff;
+    width: 160px;
+
     b {
       display: block;
     }
@@ -96,6 +99,8 @@
       margin-top: 10px;
       padding: 5px;
       animation: move-counter 4s infinite ease-in;
+      font-weight: 800;
+      font-size: 1.5rem;
     }
   }
   .form {

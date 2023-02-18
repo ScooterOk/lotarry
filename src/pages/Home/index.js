@@ -27,7 +27,7 @@ const Home = () => {
   });
 
   const onSubmit = () => {
-    const winNumber = Math.floor(Math.random() * 12) + 1;
+    const winNumber = Math.floor(Math.random() * 300) + 1;
     set("0S0_Q_21S2HA3RN", winNumber);
     const result = [];
     for (let i = 1; i <= 300; i++) {

@@ -17,8 +17,6 @@ const Header = () => {
     [gameData]
   );
 
-  console.log("gameData", gameData);
-
   const {
     control,
     handleSubmit,
@@ -44,7 +42,7 @@ const Header = () => {
           <span>{commonAttemps}</span>
         </div>
         {!!currentUser ? (
-          <div className={styles.counter} style={{ width: 300 }}>
+          <div className={styles.counter}>
             <b>Залишилося спроб:</b>
             <span>{currentUser?.count}</span>
           </div>

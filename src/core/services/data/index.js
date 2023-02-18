@@ -6,6 +6,7 @@ const initialState = {
   isGame: false,
   currentUser: get("currentUser") || null,
   gameData: get("gameData") || null,
+  isWon: get("isWon") || null,
 };
 
 export const dataSlice = createSlice({
@@ -20,6 +21,9 @@ export const dataSlice = createSlice({
     },
     setCurrentUser: (state, { payload }) => {
       state.currentUser = payload;
+    },
+    setIsWon: (state, { payload }) => {
+      state.isWon = payload;
     },
   },
 });
