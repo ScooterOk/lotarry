@@ -8,8 +8,9 @@ import Home from "../Home";
 
 import { get, set } from "lockr";
 import services from "../../core/services";
-import { button } from "./styles";
+import { button, lock_l, lock_r } from "./styles";
 import Firework from "../../components/Firework";
+import styles from "./styles.module.scss";
 
 const { setGameData, setCurrentUser, setIsWon } = services;
 
@@ -26,6 +27,33 @@ const List = () => {
     // console.log("grid", grid.current.querySelectorAll("button"));
     // if (!!!isSession) return;
     if (!grid.current) return;
+    gsap.to(grid.current.querySelectorAll(".lock_l"), {
+      duration: 1.5,
+      left: !!currentUser ? "-100%" : "0%",
+      ease: !!currentUser ? "power3.in" : "power3.out",
+      delay: 0,
+    });
+    gsap.to(grid.current.querySelectorAll(".lock_r"), {
+      duration: 1.5,
+      right: !!currentUser ? "-100%" : "0%",
+      ease: !!currentUser ? "power3.in" : "power3.out",
+      delay: 0,
+    });
+
+    console.log("gsap.version", gsap);
+
+    /*gsap.to(grid.current.querySelectorAll("section:not(.cliced) button"), {
+      duration: 3,
+      stagger: {
+        grid: "auto",
+        from: "random",
+        amount: 1,
+      },
+      opacity: 0.75,
+      ease: "power4.out",
+      background: "#000000",
+    });*/
+
     /*gsap.from(grid.current.querySelectorAll("section:not(.cliced)"), {
       duration: 1.5,
       stagger: {
@@ -54,7 +82,7 @@ const List = () => {
       repeatDelay: 5,
       ease: "power4.in",
     });*/
-  }, []);
+  }, [currentUser]);
 
   // console.log("currentUser", currentUser, winNumber);
   //
@@ -115,7 +143,18 @@ const List = () => {
 
   return (
     <Layout>
-      <Box ref={main} pt={8} minHeight={1} position={"relative"}>
+      <Box
+        ref={main}
+        pt={8}
+        pb={3}
+        minHeight={1}
+        position={"relative"}
+        sx={{
+          background: !!currentUser
+            ? "linear-gradient(185deg,  rgba(51, 51, 51, 0.75) 0%, rgba(27, 27, 27, 0.75) 100%)"
+            : "linear-gradient(185deg,  rgba(51, 51, 51, 0.75) 0%, rgba(27, 27, 27, 0.75) 100%)",
+        }}
+      >
         {isWon ? (
           <Firework winNumber={winNumber} />
         ) : (
@@ -135,6 +174,9 @@ const List = () => {
               },
             }}
           >
+            {/*<div className={styles.cut} />*/}
+            <Box sx={lock_l} className={"lock_l"} />
+            <Box sx={lock_r} className={"lock_r"} />
             {gameData?.map((item) => (
               <section
                 key={`key_list-${item.name}`}
@@ -150,6 +192,10 @@ const List = () => {
                   onClick={() => {
                     handleClickButton(item.name);
                   }}
+                  className={cx(
+                    !!!currentUser && item.cliced && !item.won && styles.clicked
+                    // !!!currentUser && !item.won && styles.disabled
+                  )}
                   sx={button}
                 >
                   {item.name}

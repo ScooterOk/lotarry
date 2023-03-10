@@ -17,16 +17,15 @@ const styles = {
     zIndex: 0,
   },
   "& main": {
-    background:
-      "linear-gradient(185deg, rgba(58,29,95,1) 0%, rgba(13,15,64,1) 100%)",
+    /*background:
+      "linear-gradient(185deg, rgba(58,29,95,1) 0%, rgba(13,15,64,1) 100%)",*/
     position: "relative",
     zIndex: 1,
-    maxWidth: "calc(100% - 56px - 56px)",
+    maxWidth: "calc(100% - 10% - 10%)",
     margin: "auto",
     height: "calc(100vh - 120px)",
     overflowY: "auto",
     overflowX: "hidden",
-    paddingBottom: 3,
     marginTop: 15,
   },
 };

@@ -20,7 +20,14 @@ const StartGameForm = ({ open, handleClose }) => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    shouldUnregister: true,
+    defaultValues: {
+      name: "",
+      phone: "",
+      count: "",
+    },
+  });
 
   const onSubmit = (formData) => {
     setCurrentUser(formData);

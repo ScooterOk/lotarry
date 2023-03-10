@@ -6,6 +6,8 @@ import StartGameForm from "../../StartGameForm";
 import { Controller, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
+import logo_safe_box from "../../../assets/img/logo_safe_box.png";
+
 const { REACT_APP_GAME_PASSWORD } = process.env;
 
 const Header = () => {
@@ -36,7 +38,11 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <div className={styles.wrapper}>
-        <div className={styles.logo}>1000/1</div>
+        <div className={styles.logo}>
+          <div className={styles.logo_wrapper}>
+            <img src={logo_safe_box} alt="" />
+          </div>
+        </div>
         <div className={styles.counter}>
           <b>Залишилося спроб:</b>
           <span>{commonAttemps}</span>
