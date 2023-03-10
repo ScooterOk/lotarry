@@ -2,6 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## GSAP manual installation
+Install the file. With npm it'd be:
+#### `npm install ./gsap-bonus.tgz`
+
 ## Available Scripts
 
 In the project directory, you can run:
