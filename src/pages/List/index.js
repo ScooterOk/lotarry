@@ -14,14 +14,14 @@ import styles from "./styles.module.scss";
 
 const { setGameData, setCurrentUser, setIsWon } = services;
 
-const winNumber = get("0S0_Q_21S2HA3RN");
-
 const List = () => {
   const { isSession, gameData, currentUser, isWon } = useSelector(
     (state) => state.data
   );
   const grid = useRef();
   const main = useRef();
+  const winNumber = get("0S0_Q_21S2HA3RN");
+  console.log("winNumberInit", winNumber);
 
   useEffect(() => {
     // console.log("grid", grid.current.querySelectorAll("button"));
@@ -116,9 +116,10 @@ const List = () => {
   };
 
   const handleClickButton = (wn) => {
-    console.log(winNumber);
+    console.log(winNumber, gameData);
     const result = gameData.map((item) => {
       if (item.name === wn) {
+        console.log("WIN!!!!", wn, winNumber, wn === winNumber);
         return {
           ...item,
           cliced: true,
