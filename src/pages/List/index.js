@@ -14,6 +14,8 @@ import styles from "./styles.module.scss";
 
 const { setGameData, setCurrentUser, setIsWon } = services;
 
+//const { REACT_APP_COUNT } = process.env;
+
 const List = () => {
   const { isSession, gameData, currentUser, isWon } = useSelector(
     (state) => state.data
@@ -203,9 +205,15 @@ const List = () => {
                 </Button>
               </section>
             ))}
+           
           </Box>
+          
         )}
+         <Box padding={5} color={"white"}>
+              SF-00001
+            </Box>
       </Box>
+      
     </Layout>
   );
 };

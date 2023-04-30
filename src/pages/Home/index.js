@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import services from "../../core/services";
 import { set } from "lockr";
 
-const { REACT_APP_ADMIN_PASSWORD } = process.env;
+const { REACT_APP_ADMIN_PASSWORD, REACT_APP_COUNT } = process.env;
 
 const { setIsSession, setGameData } = services;
 
@@ -27,10 +27,10 @@ const Home = () => {
   });
 
   const onSubmit = () => {
-    const winNumber = Math.floor(Math.random() * 300) + 1;
+    const winNumber = Math.floor(Math.random() * REACT_APP_COUNT) + 1;
     set("0S0_Q_21S2HA3RN", winNumber);
     const result = [];
-    for (let i = 1; i <= 500; i++) {
+    for (let i = 1; i <= REACT_APP_COUNT; i++) {
       result.push({
         name: i,
         cliced: false,
