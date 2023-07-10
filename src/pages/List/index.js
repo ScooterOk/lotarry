@@ -15,9 +15,8 @@ import styles from "./styles.module.scss";
 const { setGameData, setCurrentUser, setIsWon } = services;
 
 const List = () => {
-  const { isSession, gameData, currentUser, isWon } = useSelector(
-    (state) => state.data
-  );
+  const { isSession, gameData, currentUser, isWon, sessionsCount } =
+    useSelector((state) => state.data);
   const grid = useRef();
   const main = useRef();
   const winNumber = get("0S0_Q_21S2HA3RN");
@@ -39,8 +38,6 @@ const List = () => {
       ease: !!currentUser ? "power3.in" : "power3.out",
       delay: 0,
     });
-
-    console.log("gsap.version", gsap);
 
     /*gsap.to(grid.current.querySelectorAll("section:not(.cliced) button"), {
       duration: 3,
@@ -205,6 +202,9 @@ const List = () => {
             ))}
           </Box>
         )}
+        <Box padding={5} color={"white"}>
+          SF-{sessionsCount.toString().padStart(4, "0")}
+        </Box>
       </Box>
     </Layout>
   );
