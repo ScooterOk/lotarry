@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Button, Stack, TextField } from "@mui/material";
 import bg from "../../assets/img/bg.webm";
 import ModalCore from "../../components/ModalCore";
@@ -7,14 +7,23 @@ import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import services from "../../core/services";
 import { set } from "lockr";
+import { useSelector } from "react-redux";
 
 const { REACT_APP_ADMIN_PASSWORD } = process.env;
 
-const { setIsSession, setGameData } = services;
+const { setIsSession, setGameData, setSessionsCount } = services;
 
 // Home page
 const Home = () => {
   const navigate = useNavigate();
+  const { sessionsCount, isSession } = useSelector((state) => state.data);
+  const navigation = useNavigate();
+
+  console.log("sessionsCount", sessionsCount);
+
+  useEffect(() => {
+    if (isSession) navigation("/list");
+  }, [isSession, navigation]);
 
   const {
     control,
@@ -41,6 +50,8 @@ const Home = () => {
     set("gameData", result);
     setIsSession(true);
     set("isSession", new Date().getTime());
+    setSessionsCount(sessionsCount + 1);
+    set("sessionsCount", sessionsCount + 1);
     navigate("/list");
   };
 

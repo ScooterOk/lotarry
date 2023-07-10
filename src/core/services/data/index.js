@@ -7,13 +7,15 @@ const initialState = {
   currentUser: get("currentUser") || null,
   gameData: get("gameData") || null,
   isWon: get("isWon") || null,
+  sessionsCount: get("sessionsCount") || 0,
 };
 
 export const dataSlice = createSlice({
   name: "data",
   initialState,
   reducers: {
-    setIsSession: (state, payload) => {
+    setIsSession: (state, { payload }) => {
+      console.log("setIsSession", payload);
       state.isSession = payload;
     },
     setGameData: (state, { payload }) => {
@@ -24,6 +26,9 @@ export const dataSlice = createSlice({
     },
     setIsWon: (state, { payload }) => {
       state.isWon = payload;
+    },
+    setSessionsCount: (state, { payload }) => {
+      state.sessionsCount = payload;
     },
   },
 });
