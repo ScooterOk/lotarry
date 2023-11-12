@@ -1,7 +1,7 @@
 import React from "react";
 import { Backdrop, Box, Fade, Modal } from "@mui/material";
 
-const ModalCore = ({ open, handleClose, children, width }) => {
+const ModalCore = ({ open, handleClose, children, width, maxWidth }) => {
   return (
     <Modal
       aria-modal={"true"}
@@ -26,6 +26,7 @@ const ModalCore = ({ open, handleClose, children, width }) => {
         <Box
           sx={{
             minWidth: width || "auto",
+            maxWidth: maxWidth || "auto",
             position: "relative",
             zIndex: 1,
             outline: "none",
