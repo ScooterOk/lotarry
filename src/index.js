@@ -10,11 +10,21 @@ import { store } from "./store";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home";
 import List from "./pages/List";
+import SignInPage from "./pages/SignInPage";
+import SignUpPage from "./pages/SignUpPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/sign-in",
+    element: <SignInPage />,
+  },
+  {
+    path: "/sign-up",
+    element: <SignUpPage />,
   },
   {
     path: "/list",

@@ -4,10 +4,11 @@ import { get } from "lockr";
 const initialState = {
   isSession: get("isSession") || false,
   isGame: false,
-  currentUser: get("currentUser") || null,
+  currentAttempt: get("currentAttempt") || null,
   gameData: get("gameData") || null,
   isWon: get("isWon") || null,
   sessionsCount: get("sessionsCount") || 0,
+  officeUser: get("officeUser") || null,
 };
 
 export const dataSlice = createSlice({
@@ -15,20 +16,22 @@ export const dataSlice = createSlice({
   initialState,
   reducers: {
     setIsSession: (state, { payload }) => {
-      console.log("setIsSession", payload);
       state.isSession = payload;
     },
     setGameData: (state, { payload }) => {
       state.gameData = payload;
     },
-    setCurrentUser: (state, { payload }) => {
-      state.currentUser = payload;
+    setCurrentAttempt: (state, { payload }) => {
+      state.currentAttempt = payload;
     },
     setIsWon: (state, { payload }) => {
       state.isWon = payload;
     },
     setSessionsCount: (state, { payload }) => {
       state.sessionsCount = payload;
+    },
+    setOfficeUser: (state, { payload }) => {
+      state.officeUser = payload;
     },
   },
 });

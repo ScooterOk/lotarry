@@ -18,11 +18,15 @@ const { REACT_APP_ADMIN_PASSWORD } = process.env;
 const { setIsSession, setGameData, setSessionsCount } = services;
 
 // Home page
-const Home = () => {
+const SignInPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { sessionsCount, isSession } = useSelector((state) => state.data);
   const navigation = useNavigate();
+
+  const { data: usersList } = useGetAllUsersQuery();
+
+  console.log("usersList", usersList);
 
   useEffect(() => {
     if (isSession) navigation("/list");
@@ -76,4 +80,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default SignInPage;
