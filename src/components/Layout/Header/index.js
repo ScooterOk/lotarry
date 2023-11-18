@@ -7,17 +7,34 @@ import { Controller, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
 import logo_safe_box from "../../../assets/img/logo_safe_box.png";
+import {
+  useGetAttemptByIdQuery,
+  useGetSessionByIdQuery,
+} from "../../../core/services/data/dataApi";
 
 const { REACT_APP_GAME_PASSWORD } = process.env;
 
 const Header = () => {
   const [isFormShow, setIsFormShow] = useState(false);
-  const { gameData, currentUser } = useSelector((state) => state.data);
-
-  const commonAttemps = useMemo(
-    () => gameData?.filter((item) => !item.cliced).length || 0,
-    [gameData]
+  const { gameData, currentUser, isSession, currentAttempt } = useSelector(
+    (state) => state.data
   );
+
+  const { data: session } = useGetSessionByIdQuery(isSession, {
+    skip: !isSession,
+  });
+  const { data: attemptData } = useGetAttemptByIdQuery(currentAttempt, {
+    skip: !currentAttempt,
+  });
+
+  console.log("currentAttempt", currentAttempt, attemptData);
+
+  const commonAttemps = useMemo(() => {
+    const result = session?.attempts?.reduce((previousValue, currentValue) => {
+      return [...previousValue, ...currentValue.memberSelects];
+    }, []);
+    return result?.length ? 500 - result?.length : 0;
+  }, [session]);
 
   const {
     control,
@@ -47,10 +64,13 @@ const Header = () => {
           <b>Залишилося спроб:</b>
           <span>{commonAttemps}</span>
         </div>
-        {!!currentUser ? (
+        {!!currentAttempt ? (
           <div className={styles.counter}>
             <b>Залишилося спроб:</b>
-            <span>{currentUser?.count}</span>
+            <span>
+              {attemptData?.attemptCount - attemptData?.memberSelects?.length ||
+                "..."}
+            </span>
           </div>
         ) : (
           <div className={styles.form}>

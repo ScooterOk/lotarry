@@ -6,42 +6,58 @@ import Layout from "../../components/Layout";
 import { useSelector } from "react-redux";
 import Home from "../Home";
 
-import { get, set } from "lockr";
+import { get, set, rm } from "lockr";
 import services from "../../core/services";
 import { button, lock_l, lock_r } from "./styles";
 import Firework from "../../components/Firework";
 import styles from "./styles.module.scss";
 import {
+  useGetAttemptByIdQuery,
   useGetSessionByIdQuery,
   usePostMembersSelectsMutation,
 } from "../../core/services/data/dataApi";
 
-const { setGameData, setCurrentUser, setIsWon } = services;
+const { setGameData, setCurrentAttempt, setIsWon } = services;
 
 const List = () => {
   const { isSession, officeUser, currentAttempt, isWon, sessionsCount } =
     useSelector((state) => state.data);
 
-  const { data: session } = useGetSessionByIdQuery(isSession, {
-    skip: !isSession,
-  });
+  const { data: session, refetch: refetchSession } = useGetSessionByIdQuery(
+    isSession,
+    {
+      skip: !isSession,
+    }
+  );
+
+  const { data: attemptData, refetch: refetchAttempt } = useGetAttemptByIdQuery(
+    currentAttempt,
+    {
+      skip: !currentAttempt,
+    }
+  );
 
   const [addNewAttempt] = usePostMembersSelectsMutation();
+
+  const attempts = useMemo(
+    () =>
+      session?.attempts?.reduce((previousValue, currentValue) => {
+        return [...previousValue, ...currentValue.memberSelects];
+      }, []),
+    [session]
+  );
 
   const gameData = useMemo(() => {
     const result = [];
     for (let i = 1; i <= 500; i++) {
       result.push({
         name: i,
-        cliced: false,
+        cliced: attempts?.some((value) => value.selectPosition === i),
         won: false,
       });
     }
     return result;
-  }, []);
-
-  console.log("session", session);
-  console.log("currentAttempt", currentAttempt);
+  }, [attempts]);
 
   const grid = useRef();
   const main = useRef();
@@ -144,6 +160,7 @@ const List = () => {
 
   const handleClickButton = async (wn) => {
     console.log(session?.winPosition, wn);
+    console.log("attemptData", attemptData, attemptData.memberSelects.length);
 
     //   {
     //     "attempt" : {
@@ -161,15 +178,27 @@ const List = () => {
 
     const body = {
       attempt: {
-        id: currentAttempt.id,
+        id: currentAttempt,
       },
       selectPosition: wn,
       isWin: false,
       selectDatetime: new Date().getTime(),
     };
 
-    const res = await addNewAttempt({ body });
-    console.log("RES", res);
+    await addNewAttempt({ body });
+    await refetchSession();
+    const responseAttempt = await refetchAttempt();
+    console.log(
+      responseAttempt?.data?.attemptCount,
+      responseAttempt?.data?.memberSelects?.length
+    );
+    if (
+      responseAttempt?.data?.attemptCount ===
+      responseAttempt?.data?.memberSelects?.length
+    ) {
+      setCurrentAttempt(null);
+      rm("currentAttempt");
+    }
 
     // const result = gameData.map((item) => {
     //   if (item.name === wn) {
