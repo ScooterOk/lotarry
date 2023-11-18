@@ -72,6 +72,9 @@ const dataApi = createApi({
     }),
 
     // Attempts
+    getAttemptById: builder.query({
+      query: (id) => `/attempts/${id}`,
+    }),
     postNewAttempt: builder.mutation({
       query: ({ body }) => ({
         url: `/attempts`,
@@ -101,6 +104,7 @@ export const {
   useDeleteSessionByIdMutation,
   useGetMembersListQuery,
   usePostNewMemberMutation,
+  useGetAttemptByIdQuery,
   usePostNewAttemptMutation,
   usePostMembersSelectsMutation,
 } = dataApi;
