@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef } from "react";
-import { Box, Button } from "@mui/material";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Box, Button, CircularProgress } from "@mui/material";
 import { gsap } from "gsap";
 import cx from "classnames";
 import Layout from "../../components/Layout";
@@ -17,9 +17,11 @@ import {
   usePostMembersSelectsMutation,
 } from "../../core/services/data/dataApi";
 
-const { setGameData, setCurrentAttempt, setIsWon } = services;
+const { setIsSession, setCurrentAttempt, setIsWon } = services;
 
 const List = () => {
+  const [loading, setLoading] = useState(null);
+
   const { isSession, officeUser, currentAttempt, isWon, sessionsCount } =
     useSelector((state) => state.data);
 
@@ -53,11 +55,14 @@ const List = () => {
       result.push({
         name: i,
         cliced: attempts?.some((value) => value.selectPosition === i),
-        won: false,
+        won:
+          session?.winPosition === i &&
+          attempts?.some((value) => value.selectPosition === i),
+        loading: i === loading,
       });
     }
     return result;
-  }, [attempts]);
+  }, [attempts, loading, session]);
 
   const grid = useRef();
   const main = useRef();
@@ -159,8 +164,9 @@ const List = () => {
   };
 
   const handleClickButton = async (wn) => {
-    console.log(session?.winPosition, wn);
+    console.log(session?.winPosition);
     console.log("attemptData", attemptData, attemptData.memberSelects.length);
+    setLoading(wn);
 
     //   {
     //     "attempt" : {
@@ -181,24 +187,26 @@ const List = () => {
         id: currentAttempt,
       },
       selectPosition: wn,
-      isWin: false,
+      win: wn === session?.winPosition,
       selectDatetime: new Date().getTime(),
     };
-
     await addNewAttempt({ body });
-    await refetchSession();
-    const responseAttempt = await refetchAttempt();
-    console.log(
-      responseAttempt?.data?.attemptCount,
-      responseAttempt?.data?.memberSelects?.length
-    );
-    if (
-      responseAttempt?.data?.attemptCount ===
-      responseAttempt?.data?.memberSelects?.length
-    ) {
+    const updatedSession = await refetchSession();
+
+    const isAttemptUsed =
+      updatedSession?.data?.attempts.find((item) => item.id === currentAttempt)
+        ?.attemptCount ===
+      updatedSession?.data?.attempts.find((item) => item.id === currentAttempt)
+        ?.memberSelects?.length;
+
+    if (isAttemptUsed && wn !== session?.winPosition) {
       setCurrentAttempt(null);
       rm("currentAttempt");
     }
+    if (wn === session?.winPosition) {
+      handleWin();
+    }
+    setLoading(null);
 
     // const result = gameData.map((item) => {
     //   if (item.name === wn) {
@@ -211,16 +219,6 @@ const List = () => {
     //   }
     //   return item;
     // });
-    // const count = currentAttempt?.count - 1;
-    // const currentUserResult =
-    //   !!count && count > 0 ? { ...currentAttempt, count } : null;
-    // setGameData(result);
-    // setCurrentUser(currentUserResult);
-    // set("gameData", result);
-    // set("currentUser", currentUserResult);
-    // if (wn === winNumber) {
-    //   handleWin();
-    // }
   };
 
   console.log("isSession/officeUser", isSession, officeUser);
@@ -285,9 +283,24 @@ const List = () => {
                       styles.clicked
                     // !!!currentUser && !item.won && styles.disabled
                   )}
-                  sx={button}
+                  sx={{
+                    ...button,
+                    ...(!!item.loading && {
+                      transform: "scale(1.1)",
+                      pointerEvents: "none",
+                      opacity: 0.8,
+                    }),
+                  }}
                 >
-                  {item.name}
+                  {item.loading && (
+                    <CircularProgress
+                      sx={{
+                        color: "#fff",
+                      }}
+                      size={32}
+                    />
+                  )}
+                  {!item.loading && item.name}
                 </Button>
               </section>
             ))}
