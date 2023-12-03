@@ -11,7 +11,7 @@ import servises from "../../core/services";
 
 gsap.registerPlugin(DrawSVGPlugin);
 
-const { setIsSession, setGameData, setCurrentUser, setIsWon } = servises;
+const { setIsSession, setCurrentAttempt, setIsWon } = servises;
 
 const Firework = ({ winNumber }) => {
   const svg = useRef();
@@ -44,14 +44,12 @@ const Firework = ({ winNumber }) => {
   }, []);
 
   const handleFinishSession = () => {
+    console.log("handleFinishSession");
+    setCurrentAttempt(null);
+    rm("currentAttempt");
     setIsSession(null);
-    setGameData(null);
-    setCurrentUser(null);
-    setIsWon(null);
     rm("isSession", null);
-    rm("isGame", null);
-    rm("currentUser", null);
-    rm("gameData", null);
+    setIsWon(null);
     rm("isWon", null);
     navigate("/");
   };
