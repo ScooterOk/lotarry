@@ -12,6 +12,7 @@ import { button, lock_l, lock_r } from "./styles";
 import Firework from "../../components/Firework";
 import styles from "./styles.module.scss";
 import {
+  useEditSessionByIdMutation,
   useGetAttemptByIdQuery,
   useGetSessionByIdQuery,
   usePostMembersSelectsMutation,
@@ -41,6 +42,8 @@ const List = () => {
 
   const [addNewAttempt] = usePostMembersSelectsMutation();
 
+  const [editSession] = useEditSessionByIdMutation();
+
   const attempts = useMemo(
     () =>
       session?.attempts?.reduce((previousValue, currentValue) => {
@@ -68,10 +71,10 @@ const List = () => {
   const main = useRef();
   const winNumber = get("0S0_Q_21S2HA3RN");
 
-  useEffect(() => {
-    if (!isSession) return;
-    console.log("isSession", isSession);
-  }, [isSession]);
+  // useEffect(() => {
+  //   if (!isSession) return;
+  //   console.log("isSession", isSession);
+  // }, [isSession]);
 
   useEffect(() => {
     // console.log("grid", grid.current.querySelectorAll("button"));
@@ -136,7 +139,7 @@ const List = () => {
   //
   // console.log("gsap", gsap);
 
-  const handleWin = () => {
+  const handleWin = async (currentMember) => {
     gsap.to(grid.current.querySelectorAll("section.won"), {
       duration: 3,
       y: -50,
@@ -161,11 +164,29 @@ const List = () => {
       y: 50,
       ease: "power4.in",
     });
+
+    const body = {
+      finishTime: new Date().getTime(),
+      winMember: {
+        ...currentMember,
+      },
+      office: session?.office,
+      number: session?.number,
+      startTime: session?.startTime,
+      winPosition: session?.winPosition,
+    };
+
+    console.log("body", body);
+
+    const response = await editSession({ id: session?.id, body });
+    console.log("response", response);
   };
 
+  // console.log("session", session, attemptData);
+
   const handleClickButton = async (wn) => {
-    console.log(session?.winPosition);
-    console.log("attemptData", attemptData, attemptData.memberSelects.length);
+    // console.log(session?.winPosition);
+    // console.log("attemptData", attemptData, attemptData.memberSelects.length);
     setLoading(wn);
 
     //   {
@@ -199,13 +220,14 @@ const List = () => {
       updatedSession?.data?.attempts.find((item) => item.id === currentAttempt)
         ?.memberSelects?.length;
 
+    if (wn === session?.winPosition) {
+      handleWin(attemptData?.member);
+    }
     if (isAttemptUsed && wn !== session?.winPosition) {
       setCurrentAttempt(null);
       rm("currentAttempt");
     }
-    if (wn === session?.winPosition) {
-      handleWin();
-    }
+
     setLoading(null);
 
     // const result = gameData.map((item) => {
@@ -221,7 +243,7 @@ const List = () => {
     // });
   };
 
-  console.log("isSession/officeUser", isSession, officeUser);
+  // console.log("isSession/officeUser", isSession, officeUser);
 
   if (!isSession || !officeUser) return <Home />;
 
