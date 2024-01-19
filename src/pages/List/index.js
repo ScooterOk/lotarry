@@ -17,6 +17,7 @@ import {
   useGetSessionByIdQuery,
   usePostMembersSelectsMutation,
 } from "../../core/services/data/dataApi";
+import { Link } from "react-router-dom";
 
 const { setIsSession, setCurrentAttempt, setIsWon } = services;
 
@@ -175,20 +176,11 @@ const List = () => {
       startTime: session?.startTime,
       winPosition: session?.winPosition,
     };
-
-    console.log("body", body);
-
-    const response = await editSession({ id: session?.id, body });
-    console.log("response", response);
+    await editSession({ id: session?.id, body });
   };
 
-  // console.log("session", session, attemptData);
-
   const handleClickButton = async (wn) => {
-    // console.log(session?.winPosition);
-    // console.log("attemptData", attemptData, attemptData.memberSelects.length);
     setLoading(wn);
-
     //   {
     //     "attempt" : {
     //         "id": 1,
@@ -328,7 +320,15 @@ const List = () => {
             ))}
           </Box>
         )}
-        <Box padding={5} color={"white"}>
+        <Box
+          padding={5}
+          color={"white"}
+          component={Link}
+          to={"/sessions"}
+          sx={{
+            textDecoration: "none",
+          }}
+        >
           SF-{sessionsCount.toString().padStart(4, "0")}
         </Box>
       </Box>

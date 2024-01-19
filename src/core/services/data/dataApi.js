@@ -35,6 +35,11 @@ const dataApi = createApi({
         method: "DELETE",
       }),
     }),
+
+    // Sessions
+    getSessionsList: builder.query({
+      query: (id) => `/sessions`,
+    }),
     setNewSession: builder.mutation({
       query: ({ body }) => ({
         url: `/sessions`,
@@ -98,6 +103,7 @@ export const {
   useGetAllUsersQuery,
   useSetNewUserMutation,
   useDeleteUserMutation,
+  useGetSessionsListQuery,
   useSetNewSessionMutation,
   useGetSessionByIdQuery,
   useEditSessionByIdMutation,

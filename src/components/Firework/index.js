@@ -44,7 +44,6 @@ const Firework = ({ winNumber }) => {
   }, []);
 
   const handleFinishSession = () => {
-    console.log("handleFinishSession");
     setCurrentAttempt(null);
     rm("currentAttempt");
     setIsSession(null);
