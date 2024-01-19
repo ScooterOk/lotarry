@@ -16,9 +16,7 @@ const { REACT_APP_GAME_PASSWORD } = process.env;
 
 const Header = () => {
   const [isFormShow, setIsFormShow] = useState(false);
-  const { gameData, currentUser, isSession, currentAttempt } = useSelector(
-    (state) => state.data
-  );
+  const { isSession, currentAttempt } = useSelector((state) => state.data);
 
   const { data: session } = useGetSessionByIdQuery(isSession, {
     skip: !isSession,
@@ -27,13 +25,11 @@ const Header = () => {
     skip: !currentAttempt,
   });
 
-  console.log("currentAttempt", currentAttempt, attemptData);
-
   const commonAttemps = useMemo(() => {
     const result = session?.attempts?.reduce((previousValue, currentValue) => {
       return [...previousValue, ...currentValue.memberSelects];
     }, []);
-    return result?.length ? 500 - result?.length : 0;
+    return 500 - (result?.length || 0);
   }, [session]);
 
   const {

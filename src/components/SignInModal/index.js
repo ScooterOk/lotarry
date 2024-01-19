@@ -204,14 +204,14 @@ const SignInModal = () => {
           >
             Почати
           </LoadingButton>
-          <Button
+          {/* <Button
             onClick={async () => {
               const res = await handleDeleteUser({ id: 54 });
               console.log("res", res);
             }}
           >
             Delete
-          </Button>
+          </Button> */}
         </Stack>
       </form>
     </ModalCore>

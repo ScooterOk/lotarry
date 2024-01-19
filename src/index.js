@@ -12,6 +12,8 @@ import Home from "./pages/Home";
 import List from "./pages/List";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
+import Sessions from "./pages/Sessions";
+import IconsPreview from "./components/icons/IconsPreview";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +31,14 @@ const router = createBrowserRouter([
   {
     path: "/list",
     element: <List />,
+  },
+  {
+    path: "/sessions",
+    element: <Sessions />,
+  },
+  {
+    path: "/icons-preview",
+    element: <IconsPreview />,
   },
 ]);
 

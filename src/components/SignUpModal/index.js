@@ -37,13 +37,12 @@ const SignUpModal = () => {
   });
 
   const onSubmit = async (formData) => {
-    console.log("formData", formData);
     setLoading(true);
     const body = { ...formData };
     delete body.password_confirmation;
 
-    const res = await setNewUser({ body });
-    console.log("res", res);
+    // const res = await setNewUser({ body });
+    // console.log("res", res);
 
     return;
     // const winNumber = Math.floor(Math.random() * 300) + 1;
