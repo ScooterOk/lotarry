@@ -6,38 +6,37 @@ import Layout from "../../components/Layout";
 import { useSelector } from "react-redux";
 import Home from "../Home";
 
-import { get, set, rm } from "lockr";
+import { set, rm } from "lockr";
 import services from "../../core/services";
-import { button, lock_l, lock_r } from "./styles";
+import { button } from "./styles";
 import Firework from "../../components/Firework";
 import styles from "./styles.module.scss";
 import {
   useEditSessionByIdMutation,
-  useGetAttemptByIdQuery,
   useGetSessionByIdQuery,
   usePostMembersSelectsMutation,
 } from "../../core/services/data/dataApi";
 import { Link } from "react-router-dom";
+import dayjs from "dayjs";
 
-const { setIsSession, setCurrentAttempt, setIsWon } = services;
+const { setCurrentAttempt, setIsWon } = services;
 
 const List = () => {
   const [loading, setLoading] = useState(null);
 
-  const { isSession, officeUser, currentAttempt, isWon, sessionsCount } =
-    useSelector((state) => state.data);
+  const {
+    isSession,
+    officeUser,
+    currentAttempt,
+    isWon,
+    sessionsCount,
+    attemptsLimit,
+  } = useSelector((state) => state.data);
 
   const { data: session, refetch: refetchSession } = useGetSessionByIdQuery(
     isSession,
     {
       skip: !isSession,
-    }
-  );
-
-  const { data: attemptData, refetch: refetchAttempt } = useGetAttemptByIdQuery(
-    currentAttempt,
-    {
-      skip: !currentAttempt,
     }
   );
 
@@ -47,15 +46,34 @@ const List = () => {
 
   const attempts = useMemo(
     () =>
-      session?.attempts?.reduce((previousValue, currentValue) => {
-        return [...previousValue, ...currentValue.memberSelects];
-      }, []),
+      session?.attempts?.reduce(
+        (previousValue, currentValue) => [
+          ...previousValue,
+          ...currentValue.memberSelects,
+        ],
+        []
+      ),
     [session]
   );
 
+  // const attempts = useMemo(
+  //   () => attemptData?.memberSelects,
+  //   attemptData?.memberSelects?.reduce((previousValue, currentValue) => {
+  //     console.log("attemptData", attemptData);
+  //     return [
+  //       ...previousValue,
+  //       ...currentValue.memberSelects,
+  //     ];
+  //   }, [])
+  //   [attemptData]
+  // );
+
+  // console.log("attemptData", attemptData);
+  // console.log("attempts", attempts);
+
   const gameData = useMemo(() => {
     const result = [];
-    for (let i = 1; i <= 500; i++) {
+    for (let i = 1; i <= attemptsLimit; i++) {
       result.push({
         name: i,
         cliced: attempts?.some((value) => value.selectPosition === i),
@@ -66,11 +84,10 @@ const List = () => {
       });
     }
     return result;
-  }, [attempts, loading, session]);
+  }, [attempts, loading, session?.winPosition]);
 
   const grid = useRef();
   const main = useRef();
-  const winNumber = get("0S0_Q_21S2HA3RN");
 
   // useEffect(() => {
   //   if (!isSession) return;
@@ -167,7 +184,7 @@ const List = () => {
     });
 
     const body = {
-      finishTime: new Date().getTime(),
+      finishTime: dayjs().toISOString(),
       winMember: {
         ...currentMember,
       },
@@ -195,16 +212,25 @@ const List = () => {
     //     "attemptDatetime" : "2023-07-28T13:07:16.441+02:00"
     // }
 
+    console.log("WN", session?.winPosition);
+
     const body = {
       attempt: {
         id: currentAttempt,
       },
       selectPosition: wn,
-      win: wn === session?.winPosition,
-      selectDatetime: new Date().getTime(),
+      isWin: wn === session?.winPosition,
+      selectDatetime: dayjs().toISOString(),
     };
+
     await addNewAttempt({ body });
+    // refetchAttemptsList();
+
     const updatedSession = await refetchSession();
+
+    const winMember = updatedSession?.data?.attempts?.find(
+      (item) => item.id === currentAttempt
+    )?.member;
 
     const isAttemptUsed =
       updatedSession?.data?.attempts.find((item) => item.id === currentAttempt)
@@ -213,7 +239,7 @@ const List = () => {
         ?.memberSelects?.length;
 
     if (wn === session?.winPosition) {
-      handleWin(attemptData?.member);
+      handleWin(winMember);
     }
     if (isAttemptUsed && wn !== session?.winPosition) {
       setCurrentAttempt(null);
@@ -254,7 +280,7 @@ const List = () => {
         }}
       >
         {isWon ? (
-          <Firework winNumber={winNumber} />
+          <Firework winNumber={session?.winPosition} />
         ) : (
           <Box
             ref={grid}
@@ -273,8 +299,8 @@ const List = () => {
             }}
           >
             {/*<div className={styles.cut} />*/}
-            <Box sx={lock_l} className={"lock_l"} />
-            <Box sx={lock_r} className={"lock_r"} />
+            <Box className={cx("lock_l", styles.lock_l)} />
+            <Box className={cx("lock_r", styles.lock_r)} />
             {gameData?.map((item) => (
               <section
                 key={`key_list-${item.name}`}

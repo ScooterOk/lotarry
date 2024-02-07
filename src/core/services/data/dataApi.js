@@ -87,6 +87,9 @@ const dataApi = createApi({
         body,
       }),
     }),
+    getAttemptBySessionId: builder.query({
+      query: ({ sessionId }) => `/attempts/session/${sessionId}`,
+    }),
 
     // Members_selects
     postMembersSelects: builder.mutation({
@@ -95,6 +98,10 @@ const dataApi = createApi({
         method: "POST",
         body,
       }),
+    }),
+
+    getMembersSelectsBySessionId: builder.query({
+      query: (sessionId) => `/members_selects/session/${sessionId}`,
     }),
   }),
 });
@@ -111,7 +118,9 @@ export const {
   useGetMembersListQuery,
   usePostNewMemberMutation,
   useGetAttemptByIdQuery,
+  useGetAttemptBySessionIdQuery,
   usePostNewAttemptMutation,
   usePostMembersSelectsMutation,
+  useGetMembersSelectsBySessionIdQuery,
 } = dataApi;
 export default dataApi;

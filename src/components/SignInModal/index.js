@@ -5,13 +5,13 @@ import { Button, Stack, TextField, Typography } from "@mui/material";
 import LoadingButton from "../LoadingButton";
 import { Link } from "react-router-dom";
 import {
-  useDeleteUserMutation,
   useGetAllUsersQuery,
   useSetNewSessionMutation,
 } from "../../core/services/data/dataApi";
 import servises from "../../core/services";
 import { set } from "lockr";
 import { useSelector } from "react-redux";
+import dayjs from "dayjs";
 
 const { setSessionsCount, setGameData, setIsSession, setOfficeUser } = servises;
 
@@ -22,8 +22,6 @@ const SignInModal = () => {
   const { data: usersList } = useGetAllUsersQuery();
 
   const [handleNewSession] = useSetNewSessionMutation();
-
-  const [handleDeleteUser] = useDeleteUserMutation();
 
   const {
     control,
@@ -48,7 +46,7 @@ const SignInModal = () => {
 
     const body = {
       office: user.office,
-      startTime: new Date().getTime(),
+      startTime: dayjs().toISOString(),
       winPosition: winNumber,
       number: number.toString().padStart(4, "0"),
     };
@@ -64,27 +62,11 @@ const SignInModal = () => {
 
     const res = await handleNewSession({ body });
 
-    // console.log("handleNewSession", res);
-
-    // const winNumber = Math.floor(Math.random() * 300) + 1;
-    // set("0S0_Q_21S2HA3RN", winNumber);
-    // const result = [];
-    // for (let i = 1; i <= 500; i++) {
-    //   result.push({
-    //     name: i,
-    //     cliced: false,
-    //     won: false,
-    //   });
-    // }
     setGameData(result);
-    // set("gameData", result);
     setIsSession(res.data.id);
     set("isSession", res.data.id);
     setOfficeUser(user);
     set("officeUser", user);
-    // setSessionsCount(sessionsCount + 1);
-    // set("sessionsCount", sessionsCount + 1);
-    // navigate("/list");
     setLoading(false);
   };
 

@@ -1,28 +1,18 @@
 import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import ModalCore from "../ModalCore";
-import {
-  Box,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  IconButton,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import LoadingButton from "../LoadingButton";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import TextFieldControlled from "../TextFieldControlled";
 import PasswordFieldControlled from "../PasswordFieldControlled";
 import { Link } from "react-router-dom";
-import { useSetNewUserMutation } from "../../core/services/data/dataApi";
+// import { useSetNewUserMutation } from "../../core/services/data/dataApi";
 
 const SignUpModal = () => {
   const [loading, setLoading] = useState(false);
 
-  const [setNewUser] = useSetNewUserMutation();
+  // const [setNewUser] = useSetNewUserMutation();
 
   const {
     control,

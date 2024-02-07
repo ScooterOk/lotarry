@@ -7,30 +7,36 @@ import { Controller, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
 import logo_safe_box from "../../../assets/img/logo_safe_box.png";
-import {
-  useGetAttemptByIdQuery,
-  useGetSessionByIdQuery,
-} from "../../../core/services/data/dataApi";
+import { useGetSessionByIdQuery } from "../../../core/services/data/dataApi";
 
 const { REACT_APP_GAME_PASSWORD } = process.env;
 
 const Header = () => {
   const [isFormShow, setIsFormShow] = useState(false);
-  const { isSession, currentAttempt } = useSelector((state) => state.data);
+  const { isSession, currentAttempt, attemptsLimit } = useSelector(
+    (state) => state.data
+  );
 
   const { data: session } = useGetSessionByIdQuery(isSession, {
     skip: !isSession,
-  });
-  const { data: attemptData } = useGetAttemptByIdQuery(currentAttempt, {
-    skip: !currentAttempt,
   });
 
   const commonAttemps = useMemo(() => {
     const result = session?.attempts?.reduce((previousValue, currentValue) => {
       return [...previousValue, ...currentValue.memberSelects];
     }, []);
-    return 500 - (result?.length || 0);
-  }, [session]);
+    return attemptsLimit - (result?.length || 0);
+  }, [attemptsLimit, session?.attempts]);
+
+  const selectsCount = useMemo(() => {
+    const result = session?.attempts?.find(
+      (item) => item.id === currentAttempt
+    );
+
+    return (
+      Number(result?.attemptCount) - Number(result?.attemptMemberSelectsCount)
+    );
+  }, [currentAttempt, session?.attempts]);
 
   const {
     control,
@@ -63,10 +69,7 @@ const Header = () => {
         {!!currentAttempt ? (
           <div className={styles.counter}>
             <b>Залишилося спроб:</b>
-            <span>
-              {attemptData?.attemptCount - attemptData?.memberSelects?.length ||
-                "..."}
-            </span>
+            <span>{selectsCount || "..."}</span>
           </div>
         ) : (
           <div className={styles.form}>
