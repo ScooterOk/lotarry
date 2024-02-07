@@ -3,7 +3,6 @@ import InputMask from "react-input-mask";
 import {
   Autocomplete,
   Box,
-  Button,
   Collapse,
   Divider,
   Drawer,
@@ -11,14 +10,10 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { set } from "lockr";
 import CloseIcon from "@mui/icons-material/Close";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import services from "../../core/services";
 import {
-  useDeleteSessionByIdMutation,
-  useEditSessionByIdMutation,
-  useGetAttemptByIdQuery,
   useGetMembersListQuery,
   useGetSessionByIdQuery,
   usePostNewAttemptMutation,
@@ -26,18 +21,21 @@ import {
 } from "../../core/services/data/dataApi";
 import { useSelector } from "react-redux";
 import LoadingButton from "../LoadingButton";
+import dayjs from "dayjs";
 
 const { setCurrentAttempt } = services;
 
 const StartGameForm = ({ open, handleClose }) => {
   const [loading, setLoading] = useState(false);
-  const { isSession, officeUser, currentAttempt } = useSelector(
-    (state) => state.data
-  );
+  const { isSession, officeUser } = useSelector((state) => state.data);
 
   const { data: membersList } = useGetMembersListQuery();
   const [postNewMember] = usePostNewMemberMutation();
   const [postNewAttempt] = usePostNewAttemptMutation();
+
+  const { refetch: refetchSession } = useGetSessionByIdQuery(isSession, {
+    skip: !isSession,
+  });
 
   const members = useMemo(
     () =>
@@ -69,8 +67,6 @@ const StartGameForm = ({ open, handleClose }) => {
     name: "member",
   });
 
-  const [handleEditSession] = useEditSessionByIdMutation();
-
   const onSubmit = async (formData) => {
     setLoading(true);
 
@@ -89,21 +85,21 @@ const StartGameForm = ({ open, handleClose }) => {
     const body = {
       member,
       attemptCount: Number(formData.count),
-      attemptDatetime: new Date().getTime(),
+      attemptDatetime: dayjs().toISOString(),
       officeUser: {
         id: officeUser.id,
       },
-      session: {
+      appSession: {
         id: isSession,
       },
     };
 
     const responseAttempt = await postNewAttempt({ body });
+    refetchSession();
 
     // console.log("responseNewMember", responseNewMember);
 
     setCurrentAttempt(responseAttempt?.data?.id);
-    set("currentAttempt", responseAttempt?.data?.id);
     handleClose(false);
     setLoading(true);
   };

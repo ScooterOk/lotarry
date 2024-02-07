@@ -32,7 +32,8 @@ export const lock_l = {
   left: 0,
   width: "50%",
   height: "100%",
-  background: "rgba(255,255,255,0.1)",
+  background:
+    "linear-gradient(0deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.1) 100%)",
   zIndex: 10,
 };
 export const lock_r = {

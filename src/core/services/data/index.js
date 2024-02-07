@@ -9,6 +9,7 @@ const initialState = {
   isWon: get("isWon") || null,
   sessionsCount: get("sessionsCount") || 0,
   officeUser: get("officeUser") || null,
+  attemptsLimit: 700,
 };
 
 export const dataSlice = createSlice({

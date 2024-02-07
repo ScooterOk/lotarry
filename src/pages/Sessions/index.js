@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./style.module.scss";
 import { useGetSessionsListQuery } from "../../core/services/data/dataApi";
 import {
@@ -16,9 +16,12 @@ import {
 import Row from "./Row";
 import { IconArrowDirectionLeft } from "../../components/icons";
 import { Link } from "react-router-dom";
+import DeleteSessionModal from "./DeleteSessionModal";
 
 const Sessions = () => {
-  const { data } = useGetSessionsListQuery();
+  const { data, refetch } = useGetSessionsListQuery();
+  const [isShowDeleteSession, setisShowDeleteSession] = useState(false);
+  const [deleteSession, setDeleteSession] = useState(523);
 
   return (
     <div className={styles.sessions}>
@@ -57,15 +60,27 @@ const Sessions = () => {
               <TableCell align="center">Кількість ігор</TableCell>
               <TableCell align="center">Кількість спроб</TableCell>
               <TableCell align="center">Переможець</TableCell>
+              <TableCell align="center"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {data?.map((row) => (
-              <Row key={row.id} row={row} />
+              <Row
+                key={row.id}
+                row={row}
+                setDeleteSession={setDeleteSession}
+                setisShowDeleteSession={setisShowDeleteSession}
+              />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <DeleteSessionModal
+        open={isShowDeleteSession}
+        setOpen={setisShowDeleteSession}
+        deleteSession={deleteSession}
+        refetch={refetch}
+      />
     </div>
   );
 };

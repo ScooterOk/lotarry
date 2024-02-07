@@ -6,6 +6,13 @@ const LoadingButton = forwardRef((props, ref) => {
   return (
     <Button
       ref={ref}
+      sx={{
+        ...(loading && {
+          pointerEvents: "none",
+          opacity: 0.7,
+          transform: "scale(0.9)",
+        }),
+      }}
       {...rest}
       {...(loading && {
         loading: 1,

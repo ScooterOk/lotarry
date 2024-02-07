@@ -1,9 +1,9 @@
 import {
   Box,
   Chip,
+  CircularProgress,
   Collapse,
   IconButton,
-  Stack,
   Table,
   TableBody,
   TableCell,
@@ -12,13 +12,24 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useMemo, useState } from "react";
-import { IconArrowUp, IconArrowDown } from "../../components/icons";
+import { IconArrowUp, IconArrowDown, IconTrash } from "../../components/icons";
 import dayjs from "dayjs";
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+import { useGetAttemptBySessionIdQuery } from "../../core/services/data/dataApi";
 
-const Row = ({ row }) => {
+const Row = ({ row, setDeleteSession, setisShowDeleteSession }) => {
   const [open, setOpen] = useState(false);
+  const [sessionId, setSessionId] = useState(undefined);
+
+  const { data: sessionDetails, isLoading } = useGetAttemptBySessionIdQuery(
+    { sessionId },
+    {
+      skip: !sessionId,
+    }
+  );
 
   const gamesCount = useMemo(() => row?.attempts?.length || 0, [row]);
+
   const attemptsCount = useMemo(
     () =>
       row?.attempts?.reduce(
@@ -29,6 +40,16 @@ const Row = ({ row }) => {
     [row]
   );
 
+  const handleToogleDetails = () => {
+    setSessionId(row.id);
+    setOpen((prev) => !prev);
+  };
+
+  const handleDelete = () => {
+    setDeleteSession(row.id);
+    setisShowDeleteSession(true);
+  };
+
   return (
     <>
       <TableRow>
@@ -36,13 +57,20 @@ const Row = ({ row }) => {
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => setOpen(!open)}
+            onClick={handleToogleDetails}
           >
-            {open ? <IconArrowUp /> : <IconArrowDown />}
+            {isLoading ? (
+              <CircularProgress size={16} />
+            ) : open ? (
+              <IconArrowUp />
+            ) : (
+              <IconArrowDown />
+            )}
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
           <p>{row.number}</p>
+          <p>{row.id}</p>
         </TableCell>
         <TableCell>
           <Typography fontSize={13} fontWeight={700}>
@@ -61,6 +89,11 @@ const Row = ({ row }) => {
         >
           <b>{row?.winMember?.name || "-"}</b>
         </TableCell>
+        <TableCell>
+          <IconButton color="error" onClick={handleDelete}>
+            <IconTrash />
+          </IconButton>
+        </TableCell>
       </TableRow>
       <TableRow
         sx={{
@@ -69,18 +102,19 @@ const Row = ({ row }) => {
       >
         <TableCell
           sx={{
-            pt: open ? 2 : 0,
-            pb: open ? 2 : 0,
+            pt: sessionDetails && open ? 2 : 0,
+            pb: sessionDetails && open ? 2 : 0,
             pl: 4,
             pr: 4,
-            boxShadow: open
-              ? "inset 0px 0px 6px 0 rgba(0, 0, 0, 0.05)"
-              : "inset 0px 0px 0 0 rgba(0, 0, 0, 0)",
+            boxShadow:
+              sessionDetails && open
+                ? "inset 0px 0px 6px 0 rgba(0, 0, 0, 0.05)"
+                : "inset 0px 0px 0 0 rgba(0, 0, 0, 0)",
             transition: "all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
           }}
-          colSpan={6}
+          colSpan={7}
         >
-          <Collapse in={open} timeout="auto" unmountOnExit>
+          <Collapse in={sessionDetails && open} timeout="auto" unmountOnExit>
             <Box margin={1}>
               {/* <Typography
                 variant="h6"
@@ -101,7 +135,7 @@ const Row = ({ row }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row?.attempts?.map((attemp, index) => (
+                  {sessionDetails?.map((attemp, index) => (
                     <TableRow
                       key={`key-game-${attemp.id}`}
                       sx={{
@@ -116,7 +150,12 @@ const Row = ({ row }) => {
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{attemp?.member?.name}</TableCell>
                       <TableCell>
-                        <a href={`tel:${attemp?.member?.phone}`}>
+                        <a
+                          href={`tel:${attemp?.member?.phone}`}
+                          style={{
+                            whiteSpace: "nowrap",
+                          }}
+                        >
                           {attemp?.member?.phone}
                         </a>
                       </TableCell>
@@ -124,20 +163,21 @@ const Row = ({ row }) => {
                         {attemp?.memberSelects?.length || 0}
                       </TableCell>
                       <TableCell align="right">
-                        <Stack direction={"row"} spacing={0.5} mb={-1}>
+                        <Grid2 container spacing={1} flexWrap={"wrap"}>
                           {attemp?.memberSelects?.map((n) => (
-                            <Chip
-                              key={`key-game-${n.id}`}
-                              size="small"
-                              label={n.selectPosition}
-                              color={n.win ? "success" : "info"}
-                              sx={{
-                                fontWeight: 600,
-                                mb: 1,
-                              }}
-                            />
+                            <Grid2>
+                              <Chip
+                                key={`key-game-${n.id}`}
+                                size="small"
+                                label={n.selectPosition}
+                                color={n.isWin ? "success" : "info"}
+                                sx={{
+                                  fontWeight: 600,
+                                }}
+                              />
+                            </Grid2>
                           ))}
-                        </Stack>
+                        </Grid2>
                       </TableCell>
                     </TableRow>
                   ))}
