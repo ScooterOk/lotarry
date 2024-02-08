@@ -84,7 +84,7 @@ const List = () => {
       });
     }
     return result;
-  }, [attempts, loading, session?.winPosition]);
+  }, [attempts, attemptsLimit, loading, session?.winPosition]);
 
   const grid = useRef();
   const main = useRef();
