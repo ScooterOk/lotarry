@@ -22,6 +22,7 @@ import {
 import { useSelector } from "react-redux";
 import LoadingButton from "../LoadingButton";
 import dayjs from "dayjs";
+import { set } from "lockr";
 
 const { setCurrentAttempt } = services;
 
@@ -100,6 +101,7 @@ const StartGameForm = ({ open, handleClose }) => {
     // console.log("responseNewMember", responseNewMember);
 
     setCurrentAttempt(responseAttempt?.data?.id);
+    set("currentAttempt", responseAttempt?.data?.id);
     handleClose(false);
     setLoading(true);
   };
