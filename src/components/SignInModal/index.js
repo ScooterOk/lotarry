@@ -43,6 +43,7 @@ const SignInModal = () => {
     const winNumber = Math.floor(Math.random() * 300) + 1;
     const number = sessionsCount + 1;
     setSessionsCount(number);
+    set("sessionsCount", number);
 
     const body = {
       office: user.office,
