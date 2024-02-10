@@ -31,6 +31,7 @@ const SignInModal = () => {
     defaultValues: {
       email: "",
       password: "",
+      buttonsAmount: 500,
     },
   });
 
@@ -48,22 +49,23 @@ const SignInModal = () => {
     const body = {
       office: user.office,
       startTime: dayjs().toISOString(),
-      winPosition: winNumber,
+      buttonsAmount: formData.buttonsAmount,
+      // winPosition: winNumber,
       number: number.toString().padStart(4, "0"),
     };
 
-    const result = [];
-    for (let i = 1; i <= 500; i++) {
-      result.push({
-        name: i,
-        cliced: false,
-        won: false,
-      });
-    }
+    // const result = [];
+    // for (let i = 1; i <= 500; i++) {
+    //   result.push({
+    //     name: i,
+    //     cliced: false,
+    //     won: false,
+    //   });
+    // }
 
     const res = await handleNewSession({ body });
 
-    setGameData(result);
+    // setGameData(result);
     setIsSession(res.data.id);
     set("isSession", res.data.id);
     setOfficeUser(user);
@@ -82,7 +84,7 @@ const SignInModal = () => {
           margin={"auto"}
           width={480}
         >
-          <h1 style={{ fontWeight: 700 }}>Залогінтесь</h1>
+          <h1 style={{ fontWeight: 700 }}>Створити розіграш</h1>
 
           <Controller
             name="email"
@@ -152,6 +154,77 @@ const SignInModal = () => {
               />
             )}
           />
+
+          <Stack
+            direction={"row"}
+            spacing={2}
+            width={1}
+            sx={{
+              "& button": {
+                maxHeight: 55,
+              },
+            }}
+          >
+            <Controller
+              name="buttonsAmount"
+              control={control}
+              rules={{
+                required: (
+                  <>
+                    <b>Кількість</b> обовʼязкова
+                  </>
+                ),
+                pattern: {
+                  value: /^\d+$/,
+                  message: (
+                    <>
+                      Тільки <b>цифри</b>
+                    </>
+                  ),
+                },
+                validate: (value) => {
+                  if (Number(value) > 1000) {
+                    return (
+                      <>
+                        Максимальна кількість <b>1000</b>
+                      </>
+                    );
+                  } else {
+                    return true;
+                  }
+                },
+              }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  error={!!errors.buttonsAmount}
+                  label={"Кількість спроб"}
+                  color={"primary"}
+                  fullWidth
+                  variant={"outlined"}
+                  type={"text"}
+                  helperText={
+                    !!errors.buttonsAmount && errors?.buttonsAmount?.message
+                  }
+                  sx={{
+                    mb: 2,
+                    flexGrow: 1,
+                  }}
+                />
+              )}
+            />
+            <LoadingButton
+              variant={"contained"}
+              color={"primary"}
+              size={"large"}
+              type={"submit"}
+              loading={loading}
+              fullWidth
+            >
+              Почати
+            </LoadingButton>
+          </Stack>
+
           <Typography variant="p1" component={"span"} color="shades.900" mb={1}>
             <Stack
               direction={"row"}
@@ -178,15 +251,7 @@ const SignInModal = () => {
               </Button>
             </Stack>
           </Typography>
-          <LoadingButton
-            variant={"contained"}
-            color={"primary"}
-            size={"large"}
-            type={"submit"}
-            loading={loading}
-          >
-            Почати
-          </LoadingButton>
+
           {/* <Button
             onClick={async () => {
               const res = await handleDeleteUser({ id: 54 });

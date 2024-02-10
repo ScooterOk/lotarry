@@ -85,7 +85,7 @@ const StartGameForm = ({ open, handleClose }) => {
 
     const body = {
       member,
-      attemptCount: Number(formData.count),
+      attemptsAllowed: Number(formData.count),
       attemptDatetime: dayjs().toISOString(),
       officeUser: {
         id: officeUser.id,
