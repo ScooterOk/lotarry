@@ -7,36 +7,40 @@ import { Controller, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
 import logo_safe_box from "../../../assets/img/logo_safe_box.png";
-import { useGetSessionByIdQuery } from "../../../core/services/data/dataApi";
+import {
+  useGetAttemptByIdQuery,
+  useGetMembersSelectsBySessionIdQuery,
+  useGetSessionByIdQuery,
+} from "../../../core/services/data/dataApi";
 
 const { REACT_APP_GAME_PASSWORD } = process.env;
 
 const Header = () => {
   const [isFormShow, setIsFormShow] = useState(false);
-  const { isSession, currentAttempt, attemptsLimit } = useSelector(
-    (state) => state.data
-  );
+  const { isSession, currentAttempt } = useSelector((state) => state.data);
 
   const { data: session } = useGetSessionByIdQuery(isSession, {
     skip: !isSession,
   });
 
+  const { data: attempt } = useGetAttemptByIdQuery(currentAttempt, {
+    skip: !currentAttempt,
+  });
+
+  const { data: memberSelectsList } =
+    useGetMembersSelectsBySessionIdQuery(isSession);
+
   const commonAttemps = useMemo(() => {
-    const result = session?.attempts?.reduce((previousValue, currentValue) => {
-      return [...previousValue, ...currentValue.memberSelects];
-    }, []);
-    return attemptsLimit - (result?.length || 0);
-  }, [attemptsLimit, session?.attempts]);
+    return session?.buttonsAmount - (memberSelectsList?.length || 0);
+  }, [memberSelectsList?.length, session?.buttonsAmount]);
 
-  const selectsCount = useMemo(() => {
-    const result = session?.attempts?.find(
-      (item) => item.id === currentAttempt
+  const selectedCount = useMemo(() => {
+    const selected = memberSelectsList?.filter(
+      (item) => item.attempt.id === currentAttempt
     );
 
-    return (
-      Number(result?.attemptCount) - Number(result?.attemptMemberSelectsCount)
-    );
-  }, [currentAttempt, session?.attempts]);
+    return attempt?.attemptsAllowed - selected?.length || 0;
+  }, [attempt, currentAttempt, memberSelectsList]);
 
   const {
     control,
@@ -62,14 +66,16 @@ const Header = () => {
             <img src={logo_safe_box} alt="" />
           </div>
         </div>
-        <div className={styles.counter}>
-          <b>Залишилося спроб:</b>
-          <span>{commonAttemps}</span>
-        </div>
+        {!!commonAttemps && (
+          <div className={styles.counter}>
+            <b>Залишилося спроб:</b>
+            <span>{commonAttemps}</span>
+          </div>
+        )}
         {!!currentAttempt ? (
           <div className={styles.counter}>
             <b>Залишилося спроб:</b>
-            <span>{selectsCount || "..."}</span>
+            <span>{selectedCount || "..."}</span>
           </div>
         ) : (
           <div className={styles.form}>

@@ -13,6 +13,7 @@ import Firework from "../../components/Firework";
 import styles from "./styles.module.scss";
 import {
   useEditSessionByIdMutation,
+  useGetMembersSelectsBySessionIdQuery,
   useGetSessionByIdQuery,
   usePostMembersSelectsMutation,
 } from "../../core/services/data/dataApi";
@@ -23,91 +24,51 @@ const { setCurrentAttempt, setIsWon } = services;
 
 const List = () => {
   const [loading, setLoading] = useState(null);
+  const [winNumber, setWinNumber] = useState(null);
 
-  const {
-    isSession,
-    officeUser,
-    currentAttempt,
-    isWon,
-    sessionsCount,
-    attemptsLimit,
-  } = useSelector((state) => state.data);
+  const { isSession, officeUser, currentAttempt, isWon, sessionsCount } =
+    useSelector((state) => state.data);
 
-  const { data: session, refetch: refetchSession } = useGetSessionByIdQuery(
-    isSession,
-    {
-      skip: !isSession,
-    }
-  );
+  const { data: session } = useGetSessionByIdQuery(isSession, {
+    skip: !isSession,
+  });
 
-  const [addNewAttempt] = usePostMembersSelectsMutation();
+  const { data: memberSelectsList, refetch: memberSelectsListRefetch } =
+    useGetMembersSelectsBySessionIdQuery(isSession);
 
-  const [editSession] = useEditSessionByIdMutation();
-
-  const attempts = useMemo(
-    () =>
-      session?.attempts?.reduce(
-        (previousValue, currentValue) => [
-          ...previousValue,
-          ...currentValue.memberSelects,
-        ],
-        []
-      ),
-    [session]
-  );
-
-  // const attempts = useMemo(
-  //   () => attemptData?.memberSelects,
-  //   attemptData?.memberSelects?.reduce((previousValue, currentValue) => {
-  //     console.log("attemptData", attemptData);
-  //     return [
-  //       ...previousValue,
-  //       ...currentValue.memberSelects,
-  //     ];
-  //   }, [])
-  //   [attemptData]
-  // );
-
-  // console.log("attemptData", attemptData);
-  // console.log("attempts", attempts);
+  const [addNewMemberSelect] = usePostMembersSelectsMutation();
 
   const gameData = useMemo(() => {
+    if (!session) return null;
     const result = [];
-    for (let i = 1; i <= attemptsLimit; i++) {
+    for (let i = 1; i <= session?.buttonsAmount; i++) {
       result.push({
         name: i,
-        cliced: attempts?.some((value) => value.selectPosition === i),
-        won:
-          session?.winPosition === i &&
-          attempts?.some((value) => value.selectPosition === i),
+        cliced: memberSelectsList?.some((value) => value.selectPosition === i),
+        won: memberSelectsList?.find(
+          (value) => i === value.selectPosition && value.isWin
+        ),
         loading: i === loading,
       });
     }
     return result;
-  }, [attempts, attemptsLimit, loading, session?.winPosition]);
+  }, [loading, memberSelectsList, session]);
 
   const grid = useRef();
   const main = useRef();
 
-  // useEffect(() => {
-  //   if (!isSession) return;
-  //   console.log("isSession", isSession);
-  // }, [isSession]);
-
   useEffect(() => {
-    // console.log("grid", grid.current.querySelectorAll("button"));
-    // if (!!!isSession) return;
     if (!grid.current) return;
     gsap.to(grid.current.querySelectorAll(".lock_l"), {
       duration: 1.5,
-      left: !!currentAttempt ? "-100%" : "0%",
-      ease: !!currentAttempt ? "power3.in" : "power3.out",
+      left: !!currentAttempt && !!session ? "-100%" : "0%",
+      ease: !!currentAttempt && !!session ? "power3.in" : "power3.out",
       delay: 0,
     });
     gsap.to(grid.current.querySelectorAll(".lock_r"), {
       duration: 1.5,
-      right: !!currentAttempt ? "-100%" : "0%",
-      ease: !!currentAttempt ? "power3.in" : "power3.out",
+      right: !!currentAttempt && !!session ? "-100%" : "0%",
+      ease: !!currentAttempt && !!session ? "power3.in" : "power3.out",
       delay: 0,
     });
 
@@ -151,13 +112,9 @@ const List = () => {
       repeatDelay: 5,
       ease: "power4.in",
     });*/
-  }, [currentAttempt]);
+  }, [currentAttempt, session]);
 
-  // console.log("currentUser", currentUser, winNumber);
-  //
-  // console.log("gsap", gsap);
-
-  const handleWin = async (currentMember) => {
+  const handleWin = async () => {
     gsap.to(grid.current.querySelectorAll("section.won"), {
       duration: 3,
       y: -50,
@@ -183,85 +140,59 @@ const List = () => {
       ease: "power4.in",
     });
 
-    const body = {
-      finishTime: dayjs().toISOString(),
-      winMember: {
-        ...currentMember,
-      },
-      office: session?.office,
-      number: session?.number,
-      startTime: session?.startTime,
-      winPosition: session?.winPosition,
-    };
-    await editSession({ id: session?.id, body });
+    // const body = {
+    //   finishTime: dayjs().toISOString(),
+    //   winMember: {
+    //     ...currentMember,
+    //   },
+    //   office: session?.office,
+    //   number: session?.number,
+    //   startTime: session?.startTime,
+    //   winPosition: session?.winPosition,
+    // };
+    // await editSession({ id: session?.id, body });
   };
 
   const handleClickButton = async (wn) => {
     setLoading(wn);
-    //   {
-    //     "attempt" : {
-    //         "id": 1,
-    //         "member": {
-    //             "id": 1,
-    //             "phone": "0123456789",
-    //             "name": "testuser"
-    //         }
-    //     },
-    //     "selectPosition" : 10,
-    //     "isWin" : false,
-    //     "attemptDatetime" : "2023-07-28T13:07:16.441+02:00"
-    // }
-
-    console.log("WN", session?.winPosition);
 
     const body = {
       attempt: {
         id: currentAttempt,
+        appSession: {
+          id: isSession,
+        },
       },
       selectPosition: wn,
-      isWin: wn === session?.winPosition,
       selectDatetime: dayjs().toISOString(),
     };
 
-    await addNewAttempt({ body });
-    // refetchAttemptsList();
+    const select = await addNewMemberSelect({ body });
+    const response = await memberSelectsListRefetch();
 
-    const updatedSession = await refetchSession();
+    const currentAttemptData = response.data.find(
+      (item) => item.id === select?.data?.id
+    );
 
-    const winMember = updatedSession?.data?.attempts?.find(
-      (item) => item.id === currentAttempt
-    )?.member;
+    const selectedAmount =
+      response.data.filter((item) => item.attempt.id === currentAttempt)
+        ?.length || 0;
+    const attemptsAllowed = currentAttemptData?.attempt?.attemptsAllowed;
 
-    const isAttemptUsed =
-      updatedSession?.data?.attempts.find((item) => item.id === currentAttempt)
-        ?.attemptCount ===
-      updatedSession?.data?.attempts.find((item) => item.id === currentAttempt)
-        ?.memberSelects?.length;
+    const isAttemptUsed = selectedAmount >= attemptsAllowed;
 
-    if (wn === session?.winPosition) {
-      handleWin(winMember);
+    if (currentAttemptData.isWin) {
+      setWinNumber(wn);
+      handleWin();
     }
-    if (isAttemptUsed && wn !== session?.winPosition) {
+
+    if (isAttemptUsed && !currentAttemptData.isWin) {
       setCurrentAttempt(null);
       rm("currentAttempt");
     }
 
     setLoading(null);
-
-    // const result = gameData.map((item) => {
-    //   if (item.name === wn) {
-    //     console.log("WIN!!!!", wn, winNumber, wn === winNumber);
-    //     return {
-    //       ...item,
-    //       cliced: true,
-    //       won: wn === winNumber,
-    //     };
-    //   }
-    //   return item;
-    // });
   };
-
-  // console.log("isSession/officeUser", isSession, officeUser);
 
   if (!isSession || !officeUser) return <Home />;
 
@@ -280,7 +211,7 @@ const List = () => {
         }}
       >
         {isWon ? (
-          <Firework winNumber={session?.winPosition} />
+          <Firework winNumber={winNumber} />
         ) : (
           <Box
             ref={grid}
