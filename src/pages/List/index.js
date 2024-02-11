@@ -12,7 +12,6 @@ import { button } from "./styles";
 import Firework from "../../components/Firework";
 import styles from "./styles.module.scss";
 import {
-  useEditSessionByIdMutation,
   useGetMembersSelectsBySessionIdQuery,
   useGetSessionByIdQuery,
   usePostMembersSelectsMutation,

@@ -38,7 +38,7 @@ const dataApi = createApi({
 
     // Sessions
     getSessionsList: builder.query({
-      query: (id) => `/sessions`,
+      query: ({ page, size }) => `/sessions/page?page=${page}&size=${size}`,
     }),
     setNewSession: builder.mutation({
       query: ({ body }) => ({
