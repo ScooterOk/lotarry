@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import styles from "./style.module.scss";
 import { useGetSessionsListQuery } from "../../core/services/data/dataApi";
 import {
+  Backdrop,
   Button,
   CircularProgress,
+  Pagination,
   Paper,
   Stack,
   Table,
@@ -19,9 +21,25 @@ import { Link } from "react-router-dom";
 import DeleteSessionModal from "./DeleteSessionModal";
 
 const Sessions = () => {
-  const { data, refetch } = useGetSessionsListQuery();
+  const [options, setOptions] = useState({
+    page: 0,
+    size: 10,
+  });
+
+  const {
+    data: sessionsList,
+    refetch,
+    isFetching,
+  } = useGetSessionsListQuery(options);
   const [isShowDeleteSession, setisShowDeleteSession] = useState(false);
   const [deleteSession, setDeleteSession] = useState(523);
+
+  const handlePageChange = (_, page) => {
+    setOptions((prev) => ({
+      ...prev,
+      page: page - 1,
+    }));
+  };
 
   return (
     <div className={styles.sessions}>
@@ -40,10 +58,43 @@ const Sessions = () => {
         </Button>
         <h1>
           Сесії (
-          {data ? data?.length : <CircularProgress size={20} color="inherit" />}
+          {sessionsList ? (
+            sessionsList?.totalItems
+          ) : (
+            <CircularProgress size={20} color="inherit" />
+          )}
           )
         </h1>
       </Stack>
+      {sessionsList?.totalPages > 1 && (
+        <Pagination
+          count={sessionsList?.totalPages}
+          page={options.page + 1}
+          variant="outlined"
+          shape="rounded"
+          onChange={handlePageChange}
+          sx={{
+            mt: 2,
+            mb: 2,
+            pr: 4,
+            "& .MuiPagination-ul": {
+              justifyContent: "flex-end",
+              li: {
+                "& *": {
+                  borderColor: "#fff",
+                  color: "#fff",
+                  fontWeight: "600",
+                },
+                "& .Mui-selected": {
+                  backgroundColor: "#fff",
+                  color: "#000",
+                },
+              },
+            },
+          }}
+        />
+      )}
+
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">
           <TableHead>
@@ -64,7 +115,7 @@ const Sessions = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.map((row) => (
+            {sessionsList?.data?.map((row) => (
               <Row
                 key={row.id}
                 row={row}
@@ -75,6 +126,40 @@ const Sessions = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      {sessionsList?.totalPages > 1 && (
+        <Pagination
+          count={sessionsList?.totalPages}
+          page={options.page + 1}
+          variant="outlined"
+          shape="rounded"
+          onChange={handlePageChange}
+          sx={{
+            mt: 2,
+            mb: 2,
+            pr: 4,
+            "& .MuiPagination-ul": {
+              justifyContent: "flex-end",
+              li: {
+                "& *": {
+                  borderColor: "#fff",
+                  color: "#fff",
+                  fontWeight: "600",
+                },
+                "& .Mui-selected": {
+                  backgroundColor: "#fff",
+                  color: "#000",
+                },
+              },
+            },
+          }}
+        />
+      )}
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isFetching}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <DeleteSessionModal
         open={isShowDeleteSession}
         setOpen={setisShowDeleteSession}
