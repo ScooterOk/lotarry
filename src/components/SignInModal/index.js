@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import ModalCore from "../ModalCore";
-import { Button, Stack, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  OutlinedInput,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import LoadingButton from "../LoadingButton";
 import { Link } from "react-router-dom";
 import {
@@ -12,6 +18,8 @@ import servises from "../../core/services";
 import { set } from "lockr";
 import { useSelector } from "react-redux";
 import dayjs from "dayjs";
+import md5 from "md5";
+import InputMask from "react-input-mask";
 
 const { setSessionsCount, setGameData, setIsSession, setOfficeUser } = servises;
 
@@ -32,6 +40,7 @@ const SignInModal = () => {
       email: "",
       password: "",
       buttonsAmount: 500,
+      comment: "",
     },
   });
 
@@ -41,7 +50,6 @@ const SignInModal = () => {
       (user) => user.email === formData.email && user.pass === formData.password
     );
     if (!user) return;
-    const winNumber = Math.floor(Math.random() * 300) + 1;
     const number = sessionsCount + 1;
     setSessionsCount(number);
     set("sessionsCount", number);
@@ -50,8 +58,11 @@ const SignInModal = () => {
       office: user.office,
       startTime: dayjs().toISOString(),
       buttonsAmount: formData.buttonsAmount,
-      // winPosition: winNumber,
       number: number.toString().padStart(4, "0"),
+      winPositionsAmount: 1,
+      comment: md5(formData.comment),
+      sessionStatus: "ACTIVE",
+      sessionType: "WINNERS",
     };
 
     // const result = [];
@@ -213,17 +224,67 @@ const SignInModal = () => {
                 />
               )}
             />
-            <LoadingButton
-              variant={"contained"}
-              color={"primary"}
-              size={"large"}
-              type={"submit"}
-              loading={loading}
-              fullWidth
-            >
-              Почати
-            </LoadingButton>
+
+            <Controller
+              name="comment"
+              control={control}
+              rules={{
+                required: (
+                  <>
+                    <b>Пінкод</b> обовʼязковий
+                  </>
+                ),
+                validate: (value) => {
+                  const re = /^\d+$/;
+                  console.log("value", re.test(value));
+                  if (re.test(value)) {
+                    return true;
+                  } else {
+                    return (
+                      <>
+                        Пінкод має містити <b>4</b> цифри
+                      </>
+                    );
+                  }
+                },
+              }}
+              render={({ field }) => (
+                <InputMask
+                  mask={"9999"}
+                  value={field.value}
+                  onChange={field.onChange}
+                  maskChar={" "}
+                >
+                  {() => (
+                    <TextField
+                      // {...field}
+                      error={!!errors.comment}
+                      label={"Пінкод"}
+                      color={"primary"}
+                      fullWidth
+                      variant={"outlined"}
+                      type={"text"}
+                      helperText={!!errors.comment && errors?.comment?.message}
+                      sx={{
+                        mb: 2,
+                        flexGrow: 1,
+                      }}
+                    />
+                  )}
+                </InputMask>
+              )}
+            />
           </Stack>
+          <LoadingButton
+            variant={"contained"}
+            color={"primary"}
+            size={"large"}
+            type={"submit"}
+            loading={loading}
+            fullWidth
+          >
+            Почати
+          </LoadingButton>
 
           <Typography variant="p1" component={"span"} color="shades.900" mb={1}>
             <Stack

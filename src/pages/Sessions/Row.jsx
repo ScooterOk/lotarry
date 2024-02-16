@@ -17,7 +17,12 @@ import dayjs from "dayjs";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { useGetAttemptBySessionIdQuery } from "../../core/services/data/dataApi";
 
-const Row = ({ row, setDeleteSession, setisShowDeleteSession }) => {
+const Row = ({
+  row,
+  setDeleteSession,
+  setisShowDeleteSession,
+  membersList,
+}) => {
   const [open, setOpen] = useState(false);
   const [sessionId, setSessionId] = useState(undefined);
 
@@ -28,17 +33,15 @@ const Row = ({ row, setDeleteSession, setisShowDeleteSession }) => {
     }
   );
 
-  const gamesCount = useMemo(() => row?.attempts?.length || 0, [row]);
-
-  const attemptsCount = useMemo(
+  const winnerMembers = useMemo(
     () =>
-      row?.attempts?.reduce(
-        (previousValue, currentValue) =>
-          previousValue + (currentValue?.memberSelects?.length || 0),
-        0
+      row?.winMembersIds?.map((id) =>
+        membersList.find((item) => item.id === id)
       ),
-    [row]
+    [membersList, row?.winMembersIds]
   );
+
+  console.log("winnerMembers", winnerMembers);
 
   const handleToogleDetails = () => {
     setSessionId(row.id);
@@ -79,15 +82,21 @@ const Row = ({ row, setDeleteSession, setisShowDeleteSession }) => {
               ` - ${dayjs(row.finishTime).format("DD.MM.YYYY HH:MM")}`}
           </Typography>
         </TableCell>
-        <TableCell align="center">{gamesCount}</TableCell>
-        <TableCell align="center">{attemptsCount}</TableCell>
+        <TableCell align="center">{row.sessionAttemptsCount}</TableCell>
+        <TableCell align="center">{row.sessionMemberSelectsCount}</TableCell>
         <TableCell
           align="center"
           sx={{
             color: "success.main",
+            fontWeight: 700,
+            textTransform: "capitalize",
           }}
         >
-          <b>{row?.winMember?.name || "-"}</b>
+          {!!winnerMembers.length ? (
+            winnerMembers.map((item) => <p>{item.name}</p>)
+          ) : (
+            <p>-</p>
+          )}
         </TableCell>
         <TableCell>
           <IconButton color="error" onClick={handleDelete}>

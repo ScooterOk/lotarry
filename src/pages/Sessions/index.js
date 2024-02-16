@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import styles from "./style.module.scss";
-import { useGetSessionsListQuery } from "../../core/services/data/dataApi";
+import {
+  useGetMembersListQuery,
+  useGetSessionsListQuery,
+} from "../../core/services/data/dataApi";
 import {
   Backdrop,
   Button,
@@ -33,6 +36,8 @@ const Sessions = () => {
   } = useGetSessionsListQuery(options);
   const [isShowDeleteSession, setisShowDeleteSession] = useState(false);
   const [deleteSession, setDeleteSession] = useState(523);
+
+  const { data: membersList } = useGetMembersListQuery();
 
   const handlePageChange = (_, page) => {
     setOptions((prev) => ({
@@ -119,6 +124,7 @@ const Sessions = () => {
               <Row
                 key={row.id}
                 row={row}
+                membersList={membersList}
                 setDeleteSession={setDeleteSession}
                 setisShowDeleteSession={setisShowDeleteSession}
               />

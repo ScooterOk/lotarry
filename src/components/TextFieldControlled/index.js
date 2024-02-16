@@ -1,7 +1,13 @@
-import React, { forwardRef } from 'react';
-import { Controller } from 'react-hook-form';
-import { FormControl, FormHelperText, InputLabel, OutlinedInput, Typography } from '@mui/material';
-import InputMask from 'react-input-mask';
+import React, { forwardRef } from "react";
+import { Controller } from "react-hook-form";
+import {
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  OutlinedInput,
+  Typography,
+} from "@mui/material";
+import InputMask from "react-input-mask";
 
 const TextFieldControlled = forwardRef((props, ref) => {
   const {
@@ -12,29 +18,29 @@ const TextFieldControlled = forwardRef((props, ref) => {
     rules,
     onFocus,
     onBlur,
-    placeholder = '',
+    placeholder = "",
     fullWidth = true,
-    layout = 'vertical',
-    color = 'shades.500',
-    type = 'text',
+    layout = "vertical",
+    color = "shades.500",
+    type = "text",
     required = false,
     labelSpacing = 1,
     mask,
-    maskPlaceholder = '',
+    maskPlaceholder = "",
     trigger,
     multiline = false,
     minRows = 4,
     maxRows = 4,
     disabled = false,
     readOnly = false,
-    size = 'medium',
+    size = "medium",
   } = props;
 
   const getError = (errors, name) => {
-    const keys = name.split('.');
+    const keys = name.split(".");
     let value = errors;
     for (let key of keys) {
-      if (!value || typeof value !== 'object' || !(key in value)) {
+      if (!value || typeof value !== "object" || !(key in value)) {
         return undefined;
       }
       value = value[key];
@@ -51,10 +57,10 @@ const TextFieldControlled = forwardRef((props, ref) => {
         <FormControl
           fullWidth={fullWidth}
           disabled={disabled}
-          {...(layout === 'horizontal' && {
+          {...(layout === "horizontal" && {
             sx: {
-              flexDirection: 'row',
-              alignItems: 'center',
+              flexDirection: "row",
+              alignItems: "center",
             },
           })}
         >
@@ -63,13 +69,13 @@ const TextFieldControlled = forwardRef((props, ref) => {
               shrink
               required={required}
               sx={{
-                position: 'static',
-                transform: 'none',
+                position: "static",
+                transform: "none",
                 fontSize: 14,
-                lineHeight: '20px',
+                lineHeight: "20px",
                 color,
-                mb: layout === 'vertical' ? labelSpacing / 2 : 0,
-                mr: layout === 'horizontal' ? labelSpacing : 0,
+                mb: layout === "vertical" ? labelSpacing / 2 : 0,
+                mr: layout === "horizontal" ? labelSpacing : 0,
                 flexShrink: 0,
               }}
             >
@@ -77,8 +83,20 @@ const TextFieldControlled = forwardRef((props, ref) => {
             </InputLabel>
           )}
           {mask ? (
-            <InputMask mask={mask} {...field} ref={ref} maskPlaceholder={maskPlaceholder} readOnly={readOnly}>
-              <OutlinedInput error={!!getError(errors, name)} placeholder={placeholder} fullWidth={fullWidth} type={type} size={size} />
+            <InputMask
+              mask={mask}
+              {...field}
+              ref={ref}
+              maskPlaceholder={maskPlaceholder}
+              readOnly={readOnly}
+            >
+              <OutlinedInput
+                error={!!getError(errors, name)}
+                placeholder={placeholder}
+                fullWidth={fullWidth}
+                type={type}
+                size={size}
+              />
             </InputMask>
           ) : (
             <OutlinedInput
@@ -115,7 +133,7 @@ const TextFieldControlled = forwardRef((props, ref) => {
             //   top: 6,
             // }}
             >
-              <Typography variant={'hint'} color={'error.main'}>
+              <Typography variant={"hint"} color={"error.main"}>
                 {getError(errors, name)?.message}
               </Typography>
             </FormHelperText>
@@ -126,5 +144,5 @@ const TextFieldControlled = forwardRef((props, ref) => {
   );
 });
 
-TextFieldControlled.displayName = 'TextFieldControlled';
+TextFieldControlled.displayName = "TextFieldControlled";
 export default TextFieldControlled;

@@ -12,8 +12,7 @@ import {
   useGetMembersSelectsBySessionIdQuery,
   useGetSessionByIdQuery,
 } from "../../../core/services/data/dataApi";
-
-const { REACT_APP_GAME_PASSWORD } = process.env;
+import md5 from "md5";
 
 const Header = () => {
   const [isFormShow, setIsFormShow] = useState(false);
@@ -35,11 +34,10 @@ const Header = () => {
   }, [memberSelectsList?.length, session?.buttonsAmount]);
 
   const selectedCount = useMemo(() => {
-    const selected = memberSelectsList?.filter(
-      (item) => item.attempt.id === currentAttempt
-    );
-
-    return attempt?.attemptsAllowed - selected?.length || 0;
+    const selected =
+      memberSelectsList?.filter((item) => item.attempt.id === currentAttempt)
+        ?.length || 0;
+    return attempt?.attemptsAllowed - selected;
   }, [attempt, currentAttempt, memberSelectsList]);
 
   const {
@@ -91,7 +89,7 @@ const Header = () => {
                       </>
                     ),
                     validate: (val) => {
-                      if (val === REACT_APP_GAME_PASSWORD) {
+                      if (md5(val) === session?.comment) {
                         return true;
                       }
                       return "Пароль не вірний!";
