@@ -12,6 +12,7 @@ import {
   useGetMembersSelectsBySessionIdQuery,
   useGetSessionByIdQuery,
 } from "../../../core/services/data/dataApi";
+import md5 from "md5";
 
 const { REACT_APP_GAME_PASSWORD } = process.env;
 
@@ -91,7 +92,7 @@ const Header = () => {
                       </>
                     ),
                     validate: (val) => {
-                      if (val === REACT_APP_GAME_PASSWORD) {
+                      if (md5(val) === session?.comment) {
                         return true;
                       }
                       return "Пароль не вірний!";
