@@ -103,7 +103,7 @@ const StartGameForm = ({ open, handleClose }) => {
     setCurrentAttempt(responseAttempt?.data?.id);
     set("currentAttempt", responseAttempt?.data?.id);
     handleClose(false);
-    setLoading(true);
+    setLoading(false);
   };
 
   return (
