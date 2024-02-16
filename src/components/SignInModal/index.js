@@ -234,12 +234,30 @@ const SignInModal = () => {
                     <b>Пінкод</b> обовʼязковий
                   </>
                 ),
+                validate: (value) => {
+                  const re = /^\d+$/;
+                  console.log("value", re.test(value));
+                  if (re.test(value)) {
+                    return true;
+                  } else {
+                    return (
+                      <>
+                        Пінкод має містити <b>4</b> цифри
+                      </>
+                    );
+                  }
+                },
               }}
               render={({ field }) => (
-                <InputMask mask={"9999"} {...field} maskChar={" "}>
+                <InputMask
+                  mask={"9999"}
+                  value={field.value}
+                  onChange={field.onChange}
+                  maskChar={" "}
+                >
                   {() => (
                     <TextField
-                      {...field}
+                      // {...field}
                       error={!!errors.comment}
                       label={"Пінкод"}
                       color={"primary"}

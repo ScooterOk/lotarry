@@ -255,6 +255,7 @@ const List = () => {
                   )}
                   sx={{
                     ...button,
+                    ...(loading && { pointerEvents: "none" }),
                     ...(!!item.loading && {
                       transform: "scale(1.1)",
                       pointerEvents: "none",

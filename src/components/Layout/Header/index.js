@@ -14,8 +14,6 @@ import {
 } from "../../../core/services/data/dataApi";
 import md5 from "md5";
 
-const { REACT_APP_GAME_PASSWORD } = process.env;
-
 const Header = () => {
   const [isFormShow, setIsFormShow] = useState(false);
   const { isSession, currentAttempt } = useSelector((state) => state.data);
@@ -36,11 +34,10 @@ const Header = () => {
   }, [memberSelectsList?.length, session?.buttonsAmount]);
 
   const selectedCount = useMemo(() => {
-    const selected = memberSelectsList?.filter(
-      (item) => item.attempt.id === currentAttempt
-    );
-
-    return attempt?.attemptsAllowed - selected?.length || 0;
+    const selected =
+      memberSelectsList?.filter((item) => item.attempt.id === currentAttempt)
+        ?.length || 0;
+    return attempt?.attemptsAllowed - selected;
   }, [attempt, currentAttempt, memberSelectsList]);
 
   const {
