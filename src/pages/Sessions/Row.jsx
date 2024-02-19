@@ -41,8 +41,6 @@ const Row = ({
     [membersList, row?.winMembersIds]
   );
 
-  console.log("winnerMembers", winnerMembers);
-
   const handleToogleDetails = () => {
     setSessionId(row.id);
     setOpen((prev) => !prev);
@@ -77,9 +75,9 @@ const Row = ({
         </TableCell>
         <TableCell>
           <Typography fontSize={13} fontWeight={700}>
-            {dayjs(row.startTime).format("DD.MM.YYYY HH:MM")}
+            {dayjs(row.startTime).format("DD.MM.YYYY HH:mm")}
             {!!row.finishTime &&
-              ` - ${dayjs(row.finishTime).format("DD.MM.YYYY HH:MM")}`}
+              ` - ${dayjs(row.finishTime).format("DD.MM.YYYY HH:mm")}`}
           </Typography>
         </TableCell>
         <TableCell align="center">{row.sessionAttemptsCount}</TableCell>

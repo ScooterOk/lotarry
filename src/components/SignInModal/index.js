@@ -236,7 +236,6 @@ const SignInModal = () => {
                 ),
                 validate: (value) => {
                   const re = /^\d+$/;
-                  console.log("value", re.test(value));
                   if (re.test(value)) {
                     return true;
                   } else {
