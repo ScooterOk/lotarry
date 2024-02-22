@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { get } from "lockr";
 
 const initialState = {
+  isUser: get("isUser") || false,
   isSession: get("isSession") || false,
   isGame: false,
   currentAttempt: get("currentAttempt") || null,
@@ -16,6 +17,9 @@ export const dataSlice = createSlice({
   name: "data",
   initialState,
   reducers: {
+    setIsUser: (state, { payload }) => {
+      state.isUser = payload;
+    },
     setIsSession: (state, { payload }) => {
       state.isSession = payload;
     },

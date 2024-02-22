@@ -1,0 +1,180 @@
+//noinspection CssInvalidAtRule
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 90deg;
+  inherits: true;
+}
+//noinspection CssInvalidAtRule
+@property --gradX {
+  syntax: "<percentage>";
+  initial-value: 50%;
+  inherits: true;
+}
+//noinspection CssInvalidAtRule
+@property --gradY {
+  syntax: "<percentage>";
+  initial-value: 0%;
+  inherits: true;
+}
+
+:root {
+  --d: 2500ms;
+  --angle: 90deg;
+  --gradX: 100%;
+  --gradY: 50%;
+  --c1: rgba(168, 239, 255, 1);
+  --c2: rgba(168, 239, 255, 0.1);
+}
+
+.header {
+  position: fixed;
+  left: 10%;
+  right: 10%;
+  top: 24px;
+  z-index: 100;
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: linear-gradient(45deg, #5ab3d7, #47a99e, #65aaff, #a3fffc);
+    background-size: 400%;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    border-radius: 10px 10px 0 0;
+    // animation: steam 50s linear infinite;
+  }
+  &::after {
+    filter: blur(40px);
+  }
+  .wrapper {
+    position: relative;
+    //background: linear-gradient(7deg, #1e389a, #a3117d, #a20383);
+    //background-color: #0f1145;
+    background: linear-gradient(180deg, #21455b, #0b131a);
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 24px;
+    border-radius: 10px 10px 0 0;
+    &::before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      bottom: 0;
+      left: 4px;
+      //border: 2px solid #000;
+      box-shadow: inset 0 0 2px 1px rgb(19 31 42 / 90%);
+      border-radius: 8px 8px 0 0;
+      z-index: 0;
+      background: url("../../../assets/img/texture-background.jpg") repeat
+        center / cover;
+      mix-blend-mode: overlay;
+    }
+  }
+
+  .logo {
+    /*font-size: 36px;
+    font-weight: bold;
+    background: linear-gradient(7deg, #0000ff, #ffc0cb);
+    border-radius: 50%;
+    padding: 30px 20px;
+    box-shadow: 3px 1px 12px 9px #e5e5ee;
+
+    color: #fff;
+    margin-left: 10px;
+    // animation-duration: 5s;
+    // animation-name: slidein;
+    animation: move-logo 2.5s infinite ease-in-out;*/
+    width: 33.333%;
+    display: flex;
+    align-items: center;
+    .logo_wrapper {
+      position: relative;
+      line-height: 1;
+      &::before {
+        content: "";
+        display: block;
+        width: 84%;
+        height: 96%;
+        position: absolute;
+        top: 2%;
+        left: 8%;
+        z-index: -1;
+        box-shadow: 1px 8px 18px 5px rgb(0 213 251 / 20%);
+      }
+      img {
+        height: 136px;
+      }
+    }
+  }
+  .statistics {
+    text-align: center;
+    color: #fff;
+    width: 33.333%;
+    a {
+      color: currentColor;
+    }
+  }
+  .logout {
+    justify-content: flex-end;
+    text-align: center;
+    color: #fff;
+    width: 33.333%;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    white-space: nowrap;
+  }
+}
+
+@keyframes steam {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 400% 0;
+  }
+  100% {
+    background-position: 800% 0;
+  }
+}
+
+@keyframes move-counter {
+  from {
+    box-shadow: 3px 1px 12px 9px rgba(123, 223, 252, 0.5);
+  }
+
+  to {
+    box-shadow: 3px 1px 12px 10px rgba(123, 223, 252, 0.5);
+  }
+
+  50% {
+    box-shadow: 3px 1px 25px 0px #ffc0cb;
+  }
+}
+
+@keyframes move-logo {
+  from {
+    box-shadow: 3px 1px 12px 9px #e5e5ee;
+  }
+
+  to {
+    box-shadow: 3px 1px 12px 9px #e5e5ee;
+  }
+
+  50% {
+    box-shadow: 3px 1px 25px 0px #ffc0cb;
+  }
+}
+
+@keyframes borderRotate {
+  100% {
+    --angle: 420deg;
+  }
+}

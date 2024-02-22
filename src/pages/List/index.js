@@ -16,7 +16,7 @@ import {
   useGetSessionByIdQuery,
   usePostMembersSelectsMutation,
 } from "../../core/services/data/dataApi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
 const { setCurrentAttempt, setIsWon } = services;
@@ -24,8 +24,9 @@ const { setCurrentAttempt, setIsWon } = services;
 const List = () => {
   const [loading, setLoading] = useState(null);
   const [winNumber, setWinNumber] = useState(null);
+  const navigation = useNavigate();
 
-  const { isSession, officeUser, currentAttempt, isWon, sessionsCount } =
+  const { isSession, isUser, currentAttempt, isWon, sessionsCount } =
     useSelector((state) => state.data);
 
   const { data: session } = useGetSessionByIdQuery(isSession, {
@@ -33,7 +34,9 @@ const List = () => {
   });
 
   const { data: memberSelectsList, refetch: memberSelectsListRefetch } =
-    useGetMembersSelectsBySessionIdQuery(isSession);
+    useGetMembersSelectsBySessionIdQuery(isSession, {
+      skip: !isSession,
+    });
 
   const [addNewMemberSelect] = usePostMembersSelectsMutation();
 
@@ -55,6 +58,15 @@ const List = () => {
 
   const grid = useRef();
   const main = useRef();
+
+  useEffect(() => {
+    if (!isUser) {
+      navigation("/");
+    }
+    if (isUser && !isSession) {
+      navigation("/dashboard");
+    }
+  }, [isSession, isUser, navigation]);
 
   useEffect(() => {
     if (!grid.current) return;
@@ -193,7 +205,7 @@ const List = () => {
     setLoading(null);
   };
 
-  if (!isSession || !officeUser) return <Home />;
+  // if (!isSession || !officeUser) return <Home />;
 
   return (
     <Layout>
