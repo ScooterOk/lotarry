@@ -2,14 +2,17 @@ import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import ModalCore from "../ModalCore";
 import {
+  Alert,
   Button,
   OutlinedInput,
+  Slide,
+  Snackbar,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import LoadingButton from "../LoadingButton";
-import { Link } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import {
   useGetAllUsersQuery,
   useSetNewSessionMutation,
@@ -21,15 +24,17 @@ import dayjs from "dayjs";
 import md5 from "md5";
 import InputMask from "react-input-mask";
 
-const { setSessionsCount, setGameData, setIsSession, setOfficeUser } = servises;
+const { setSessionsCount, setIsUser, setIsSession, setOfficeUser } = servises;
 
 const SignInModal = () => {
   const [loading, setLoading] = useState(false);
+  const [isWarning, setIsWarning] = useState(false);
   const { sessionsCount } = useSelector((state) => state.data);
 
   const { data: usersList } = useGetAllUsersQuery();
 
   const [handleNewSession] = useSetNewSessionMutation();
+  const navigate = useNavigate();
 
   const {
     control,
@@ -49,7 +54,19 @@ const SignInModal = () => {
     const user = usersList.find(
       (user) => user.email === formData.email && user.pass === formData.password
     );
-    if (!user) return;
+
+    console.log("user", usersList);
+    if (!user) {
+      setLoading(false);
+      setIsWarning(true);
+      return;
+    }
+    setIsUser(user);
+    set("isUser", user);
+    navigate("/dashboard");
+
+    return;
+
     const number = sessionsCount + 1;
     setSessionsCount(number);
     set("sessionsCount", number);
@@ -64,15 +81,6 @@ const SignInModal = () => {
       sessionStatus: "ACTIVE",
       sessionType: "WINNERS",
     };
-
-    // const result = [];
-    // for (let i = 1; i <= 500; i++) {
-    //   result.push({
-    //     name: i,
-    //     cliced: false,
-    //     won: false,
-    //   });
-    // }
 
     const res = await handleNewSession({ body });
 
@@ -95,7 +103,7 @@ const SignInModal = () => {
           margin={"auto"}
           width={480}
         >
-          <h1 style={{ fontWeight: 700 }}>Створити розіграш</h1>
+          <h1 style={{ fontWeight: 700 }}>Ласкаво просимо</h1>
 
           <Controller
             name="email"
@@ -166,7 +174,7 @@ const SignInModal = () => {
             )}
           />
 
-          <Stack
+          {/* <Stack
             direction={"row"}
             spacing={2}
             width={1}
@@ -273,7 +281,7 @@ const SignInModal = () => {
                 </InputMask>
               )}
             />
-          </Stack>
+          </Stack> */}
           <LoadingButton
             variant={"contained"}
             color={"primary"}
@@ -322,6 +330,22 @@ const SignInModal = () => {
           </Button> */}
         </Stack>
       </form>
+      <Snackbar
+        open={isWarning}
+        onClose={() => setIsWarning(false)}
+        TransitionComponent={Slide}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setIsWarning(false)}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          Пошта або пароль невірні.
+        </Alert>
+      </Snackbar>
     </ModalCore>
   );
 };

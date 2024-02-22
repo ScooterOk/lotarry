@@ -50,7 +50,7 @@ const Firework = ({ winNumber }) => {
     rm("isSession", null);
     setIsWon(null);
     rm("isWon", null);
-    navigate("/");
+    navigate("/dashboard");
   };
 
   return (

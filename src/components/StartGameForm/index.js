@@ -28,7 +28,7 @@ const { setCurrentAttempt } = services;
 
 const StartGameForm = ({ open, handleClose }) => {
   const [loading, setLoading] = useState(false);
-  const { isSession, officeUser } = useSelector((state) => state.data);
+  const { isSession, isUser } = useSelector((state) => state.data);
 
   const { data: membersList } = useGetMembersListQuery();
   const [postNewMember] = usePostNewMemberMutation();
@@ -88,7 +88,7 @@ const StartGameForm = ({ open, handleClose }) => {
       attemptsAllowed: Number(formData.count),
       attemptDatetime: dayjs().toISOString(),
       officeUser: {
-        id: officeUser.id,
+        id: isUser.id,
       },
       appSession: {
         id: isSession,

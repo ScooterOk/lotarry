@@ -19,14 +19,12 @@ const { setIsSession, setGameData, setSessionsCount } = services;
 
 // Home page
 const Home = () => {
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const { sessionsCount, isSession } = useSelector((state) => state.data);
+  const { isUser } = useSelector((state) => state.data);
   const navigation = useNavigate();
 
   useEffect(() => {
-    if (isSession) navigation("/list");
-  }, [isSession, navigation]);
+    if (isUser) navigation("/dashboard");
+  }, [isUser, navigation]);
 
   // const onSubmit = (formData) => {
   //   console.log("formData", formData);

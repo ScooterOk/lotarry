@@ -14,6 +14,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 });*/
 
 const baseUrl = "https://logo01001-559a553141ed.herokuapp.com/api";
+// const baseUrl = "https://loto1001-jdzqis5eja-ew.a.run.app/api";
 
 const dataApi = createApi({
   reducerPath: "dataApi",
