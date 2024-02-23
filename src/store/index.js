@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import data from "../core/services/data";
 import dataApi from "../core/services/data/dataApi";
+import { logoutNotifications } from "./middleware";
 
 export const store = configureStore({
   reducer: {
@@ -8,5 +9,7 @@ export const store = configureStore({
     data,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(dataApi.middleware),
+    getDefaultMiddleware()
+      .concat(dataApi.middleware)
+      .concat([logoutNotifications]),
 });

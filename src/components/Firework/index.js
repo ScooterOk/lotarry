@@ -5,7 +5,7 @@ import DrawSVGPlugin from "gsap/DrawSVGPlugin";
 import styles from "./styles.module.scss";
 import cx from "classnames";
 import { Box, Button } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { rm } from "lockr";
 import servises from "../../core/services";
 
@@ -45,11 +45,11 @@ const Firework = ({ winNumber }) => {
 
   const handleFinishSession = () => {
     setCurrentAttempt(null);
-    rm("currentAttempt");
+    rm("_lca");
     setIsSession(null);
-    rm("isSession", null);
+    rm("_ls", null);
     setIsWon(null);
-    rm("isWon", null);
+    rm("_lw", null);
     navigate("/dashboard");
   };
 

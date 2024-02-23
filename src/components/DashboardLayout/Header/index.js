@@ -1,37 +1,34 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 
 import styles from "./styles.module.scss";
-import { Button, Stack, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import StartGameForm from "../../StartGameForm";
-import { Controller, useForm } from "react-hook-form";
+
 import { useSelector } from "react-redux";
 
 import logo_safe_box from "../../../assets/img/logo_safe_box.png";
-import {
-  useGetAttemptByIdQuery,
-  useGetMembersSelectsBySessionIdQuery,
-  useGetSessionByIdQuery,
-} from "../../../core/services/data/dataApi";
+import { useGetUserByIdQuery } from "../../../core/services/data/dataApi";
 
-import { Link, useNavigate } from "react-router-dom";
-import servises from "../../../core/services";
-import { rm } from "lockr";
+import { Link } from "react-router-dom";
 
-const { setIsUser, setIsSession } = servises;
+import logout from "../../../utils/logout";
 
 const Header = () => {
   const [isFormShow, setIsFormShow] = useState(false);
-  const { isSession, currentAttempt, isUser } = useSelector(
-    (state) => state.data
+  const { isUser } = useSelector((state) => state.data);
+
+  const { data: userData } = useGetUserByIdQuery(
+    { userId: isUser },
+    { skip: !isUser }
   );
-  const navigate = useNavigate();
 
   const handleLogOut = () => {
-    setIsUser(null);
-    rm("isUser");
-    setIsSession(null);
-    rm("isSession");
-    navigate("/");
+    logout();
+    // setIsUser(null);
+    // rm("_lu");
+    // setIsSession(null);
+    // rm("_ls");
+    // navigate("/");
   };
 
   return (
@@ -53,7 +50,7 @@ const Header = () => {
           </Button>
         </div>
         <div className={styles.logout}>
-          <b>{isUser?.name}</b>
+          <b>{userData?.name}</b>
           <Button variant="contained" color="error" onClick={handleLogOut}>
             Вийти
           </Button>

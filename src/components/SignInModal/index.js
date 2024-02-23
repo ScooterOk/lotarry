@@ -1,39 +1,25 @@
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import ModalCore from "../ModalCore";
-import {
-  Alert,
-  Button,
-  OutlinedInput,
-  Slide,
-  Snackbar,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, Slide, Snackbar, Stack, TextField } from "@mui/material";
 import LoadingButton from "../LoadingButton";
-import { Link, redirect, useNavigate } from "react-router-dom";
-import {
-  useGetAllUsersQuery,
-  useSetNewSessionMutation,
-} from "../../core/services/data/dataApi";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuthUsersMutation } from "../../core/services/data/dataApi";
 import servises from "../../core/services";
 import { set } from "lockr";
-import { useSelector } from "react-redux";
-import dayjs from "dayjs";
-import md5 from "md5";
-import InputMask from "react-input-mask";
 
-const { setSessionsCount, setIsUser, setIsSession, setOfficeUser } = servises;
+const { setToken, setIsUser } = servises;
 
 const SignInModal = () => {
   const [loading, setLoading] = useState(false);
   const [isWarning, setIsWarning] = useState(false);
-  const { sessionsCount } = useSelector((state) => state.data);
 
-  const { data: usersList } = useGetAllUsersQuery();
+  // const { data: usersList } = useGetAllUsersQuery();
 
-  const [handleNewSession] = useSetNewSessionMutation();
+  const [signInUser] = useAuthUsersMutation();
+
+  const location = useLocation();
+  const redirectPath = location.state?.path || "/dashboard";
   const navigate = useNavigate();
 
   const {
@@ -42,54 +28,65 @@ const SignInModal = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
-      buttonsAmount: 500,
-      comment: "",
     },
   });
 
   const onSubmit = async (formData) => {
     setLoading(true);
-    const user = usersList.find(
-      (user) => user.email === formData.email && user.pass === formData.password
-    );
 
-    console.log("user", usersList);
-    if (!user) {
-      setLoading(false);
+    const res = await signInUser({ body: formData });
+
+    if (res.error) {
       setIsWarning(true);
+      setLoading(false);
       return;
     }
-    setIsUser(user);
-    set("isUser", user);
-    navigate("/dashboard");
+
+    const user = { ...res.data };
+
+    setToken(user.token);
+    set("_lt", user.token);
+    delete user.token;
+    setIsUser(user.id);
+    set("_lu", user.id);
+    setLoading(false);
+    navigate(redirectPath, { replace: true });
+
+    // if (!user) {
+    //   setLoading(false);
+    //   setIsWarning(true);
+    //   return;
+    // }
+    // setIsUser(user);
+    // set("isUser", user);
+    // navigate("/dashboard");
 
     return;
 
-    const number = sessionsCount + 1;
-    setSessionsCount(number);
-    set("sessionsCount", number);
+    // const number = sessionsCount + 1;
+    // setSessionsCount(number);
+    // set("sessionsCount", number);
 
-    const body = {
-      office: user.office,
-      startTime: dayjs().toISOString(),
-      buttonsAmount: formData.buttonsAmount,
-      number: number.toString().padStart(4, "0"),
-      winPositionsAmount: 1,
-      comment: md5(formData.comment),
-      sessionStatus: "ACTIVE",
-      sessionType: "WINNERS",
-    };
+    // const body = {
+    //   office: user.office,
+    //   startTime: dayjs().toISOString(),
+    //   buttonsAmount: formData.buttonsAmount,
+    //   number: number.toString().padStart(4, "0"),
+    //   winPositionsAmount: 1,
+    //   comment: md5(formData.comment),
+    //   sessionStatus: "ACTIVE",
+    //   sessionType: "WINNERS",
+    // };
 
-    const res = await handleNewSession({ body });
+    // const res = await handleNewSession({ body });
 
-    // setGameData(result);
-    setIsSession(res.data.id);
-    set("isSession", res.data.id);
-    setOfficeUser(user);
-    set("officeUser", user);
-    setLoading(false);
+    // // setGameData(result);
+    // setIsSession(res.data.id);
+    // set("isSession", res.data.id);
+
+    // setLoading(false);
   };
 
   return (
@@ -102,11 +99,38 @@ const SignInModal = () => {
           textAlign={"center"}
           margin={"auto"}
           width={480}
+          pb={2}
         >
           <h1 style={{ fontWeight: 700 }}>Ласкаво просимо</h1>
 
+          {/* <Controller
+            name="username"
+            control={control}
+            rules={{
+              required: (
+                <>
+                  <b>Імʼя</b> обовʼязкова <br />
+                </>
+              ),
+            }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                error={!!errors.username}
+                label={"Імʼя"}
+                color={"primary"}
+                fullWidth
+                variant={"outlined"}
+                type={"text"}
+                helperText={!!errors.username && errors?.username?.message}
+                sx={{
+                  mb: 2,
+                }}
+              />
+            )}
+          /> */}
           <Controller
-            name="email"
+            name="userEmail"
             control={control}
             rules={{
               required: (
@@ -140,7 +164,6 @@ const SignInModal = () => {
               />
             )}
           />
-
           <Controller
             name="password"
             control={control}
@@ -173,7 +196,6 @@ const SignInModal = () => {
               />
             )}
           />
-
           {/* <Stack
             direction={"row"}
             spacing={2}
@@ -292,8 +314,7 @@ const SignInModal = () => {
           >
             Почати
           </LoadingButton>
-
-          <Typography variant="p1" component={"span"} color="shades.900" mb={1}>
+          {/* <Typography variant="p1" component={"span"} color="shades.900" mb={1}>
             <Stack
               direction={"row"}
               alignItems={"center"}
@@ -318,12 +339,10 @@ const SignInModal = () => {
                 Створити
               </Button>
             </Stack>
-          </Typography>
-
+          </Typography> */}
           {/* <Button
             onClick={async () => {
-              const res = await handleDeleteUser({ id: 54 });
-              console.log("res", res);
+              const res = await handleDeleteUser({ id: 54 });              
             }}
           >
             Delete

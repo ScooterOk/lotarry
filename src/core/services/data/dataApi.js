@@ -13,15 +13,36 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
   }),
 });*/
 
-const baseUrl = "https://logo01001-559a553141ed.herokuapp.com/api";
-// const baseUrl = "https://loto1001-jdzqis5eja-ew.a.run.app/api";
+// const baseUrl = "https://logo01001-559a553141ed.herokuapp.com/api";
+const baseUrl = "https://loto1001-jdzqis5eja-ew.a.run.app/api";
 
 const dataApi = createApi({
   reducerPath: "dataApi",
-  baseQuery: fetchBaseQuery({ baseUrl }),
+  baseQuery: fetchBaseQuery({
+    baseUrl,
+    prepareHeaders: (headers, { getState }) => {
+      const { token } = getState().data;
+      if (token) headers.set("authorization", `Bearer ${token}`);
+      return headers;
+    },
+  }),
+
   endpoints: (builder) => ({
+    // Auth
+    authUsers: builder.mutation({
+      query: ({ body }) => ({
+        url: `/auth/signin`,
+        method: "POST",
+        body,
+      }),
+    }),
+
+    // Users
     getAllUsers: builder.query({
       query: () => `/users`,
+    }),
+    getUserById: builder.query({
+      query: ({ userId }) => `/users/${userId}`,
     }),
     setNewUser: builder.mutation({
       query: ({ body }) => ({
@@ -30,12 +51,19 @@ const dataApi = createApi({
         body,
       }),
     }),
-    deleteUser: builder.mutation({
-      query: ({ id }) => ({
-        url: `/sessions/${id}`,
-        method: "DELETE",
+    editUser: builder.mutation({
+      query: ({ userId, body }) => ({
+        url: `/users/${userId}`,
+        method: "PUT",
+        body,
       }),
     }),
+    // deleteUser: builder.mutation({
+    //   query: ({ id }) => ({
+    //     url: `/sessions/${id}`,
+    //     method: "DELETE",
+    //   }),
+    // }),
 
     // Sessions
     getSessionsList: builder.query({
@@ -108,9 +136,11 @@ const dataApi = createApi({
 });
 
 export const {
+  useAuthUsersMutation,
   useGetAllUsersQuery,
+  useGetUserByIdQuery,
   useSetNewUserMutation,
-  useDeleteUserMutation,
+  useEditUserMutation,
   useGetSessionsListQuery,
   useSetNewSessionMutation,
   useGetSessionByIdQuery,

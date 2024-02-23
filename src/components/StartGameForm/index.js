@@ -16,6 +16,7 @@ import services from "../../core/services";
 import {
   useGetMembersListQuery,
   useGetSessionByIdQuery,
+  useGetUserByIdQuery,
   usePostNewAttemptMutation,
   usePostNewMemberMutation,
 } from "../../core/services/data/dataApi";
@@ -37,6 +38,11 @@ const StartGameForm = ({ open, handleClose }) => {
   const { refetch: refetchSession } = useGetSessionByIdQuery(isSession, {
     skip: !isSession,
   });
+
+  const { data: userData } = useGetUserByIdQuery(
+    { userId: isUser },
+    { skip: !isUser }
+  );
 
   const members = useMemo(
     () =>
@@ -87,9 +93,7 @@ const StartGameForm = ({ open, handleClose }) => {
       member,
       attemptsAllowed: Number(formData.count),
       attemptDatetime: dayjs().toISOString(),
-      officeUser: {
-        id: isUser.id,
-      },
+      officeUser: userData.office,
       appSession: {
         id: isSession,
       },
@@ -98,10 +102,8 @@ const StartGameForm = ({ open, handleClose }) => {
     const responseAttempt = await postNewAttempt({ body });
     refetchSession();
 
-    // console.log("responseNewMember", responseNewMember);
-
     setCurrentAttempt(responseAttempt?.data?.id);
-    set("currentAttempt", responseAttempt?.data?.id);
+    set("_lca", responseAttempt?.data?.id);
     handleClose(false);
     setLoading(false);
   };

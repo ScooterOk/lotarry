@@ -4,7 +4,6 @@ import { gsap } from "gsap";
 import cx from "classnames";
 import Layout from "../../components/Layout";
 import { useSelector } from "react-redux";
-import Home from "../Home";
 
 import { set, rm } from "lockr";
 import services from "../../core/services";
@@ -26,8 +25,9 @@ const List = () => {
   const [winNumber, setWinNumber] = useState(null);
   const navigation = useNavigate();
 
-  const { isSession, isUser, currentAttempt, isWon, sessionsCount } =
-    useSelector((state) => state.data);
+  const { isSession, currentAttempt, isWon, sessionsCount } = useSelector(
+    (state) => state.data
+  );
 
   const { data: session } = useGetSessionByIdQuery(isSession, {
     skip: !isSession,
@@ -60,13 +60,10 @@ const List = () => {
   const main = useRef();
 
   useEffect(() => {
-    if (!isUser) {
-      navigation("/");
-    }
-    if (isUser && !isSession) {
+    if (!isSession) {
       navigation("/dashboard");
     }
-  }, [isSession, isUser, navigation]);
+  }, [isSession, navigation]);
 
   useEffect(() => {
     if (!grid.current) return;
@@ -134,7 +131,7 @@ const List = () => {
       ease: "power4.out",
       onComplete: () => {
         setIsWon(true);
-        set("isWon", true);
+        set("_lw", true);
       },
     });
     gsap.to(grid.current.querySelectorAll("section:not(.won)"), {
@@ -204,8 +201,6 @@ const List = () => {
 
     setLoading(null);
   };
-
-  // if (!isSession || !officeUser) return <Home />;
 
   return (
     <Layout>
