@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import ModalCore from "../ModalCore";
 import { Box, Button, Stack, Typography } from "@mui/material";
@@ -7,13 +7,8 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import TextFieldControlled from "../TextFieldControlled";
 import PasswordFieldControlled from "../PasswordFieldControlled";
 import { Link } from "react-router-dom";
-// import { useSetNewUserMutation } from "../../core/services/data/dataApi";
 
 const SignUpModal = () => {
-  const [loading, setLoading] = useState(false);
-
-  // const [setNewUser] = useSetNewUserMutation();
-
   const {
     control,
     handleSubmit,
@@ -27,14 +22,15 @@ const SignUpModal = () => {
   });
 
   const onSubmit = async (formData) => {
-    setLoading(true);
-    const body = { ...formData };
-    delete body.password_confirmation;
-
+    // setLoading(true);
+    // id: 154,
+    // const body = { ...formData };
+    // body.roles = ["ROLE_ADMIN"];
+    // body.office = {
+    //   id: 1,
+    // };
+    // delete body.password_confirmation;
     // const res = await setNewUser({ body });
-    // console.log("res", res);
-
-    return;
     // const winNumber = Math.floor(Math.random() * 300) + 1;
     // set("0S0_Q_21S2HA3RN", winNumber);
     // const result = [];
@@ -218,7 +214,7 @@ const SignUpModal = () => {
                 color={"primary"}
                 size={"large"}
                 type={"submit"}
-                loading={loading}
+                // loading={loading}
               >
                 Створити
               </LoadingButton>

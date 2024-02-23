@@ -1,17 +1,10 @@
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import ModalCore from "../ModalCore";
-import {
-  Button,
-  OutlinedInput,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Stack, TextField } from "@mui/material";
 import LoadingButton from "../LoadingButton";
-import { Link, redirect, useNavigate } from "react-router-dom";
 import {
-  useGetAllUsersQuery,
+  useGetUserByIdQuery,
   useSetNewSessionMutation,
 } from "../../core/services/data/dataApi";
 import servises from "../../core/services";
@@ -21,14 +14,17 @@ import dayjs from "dayjs";
 import md5 from "md5";
 import InputMask from "react-input-mask";
 
-const { setSessionsCount, setIsUser, setIsSession, setOfficeUser } = servises;
+const { setSessionsCount, setIsSession } = servises;
 
 const SetPinModal = ({ buttonsCount, setButtonsCount }) => {
   const [loading, setLoading] = useState(false);
   const { sessionsCount, isUser } = useSelector((state) => state.data);
+  const { data: userData } = useGetUserByIdQuery(
+    { userId: isUser },
+    { skip: !isUser }
+  );
 
   const [handleNewSession] = useSetNewSessionMutation();
-  const navigate = useNavigate();
 
   const {
     control,
@@ -36,20 +32,18 @@ const SetPinModal = ({ buttonsCount, setButtonsCount }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: "",
-      password: "",
-      buttonsAmount: 500,
       comment: "",
     },
   });
 
   const onSubmit = async (formData) => {
+    setLoading(true);
     const number = sessionsCount + 1;
     setSessionsCount(number);
-    set("sessionsCount", number);
+    set("_lsc", number);
 
     const body = {
-      office: isUser.office,
+      office: userData.office,
       startTime: dayjs().toISOString(),
       buttonsAmount: buttonsCount,
       number: number.toString().padStart(4, "0"),
@@ -63,7 +57,7 @@ const SetPinModal = ({ buttonsCount, setButtonsCount }) => {
 
     // setGameData(result);
     setIsSession(res.data.id);
-    set("isSession", res.data.id);
+    set("_ls", res.data.id);
     setLoading(false);
     setButtonsCount(null);
   };
@@ -157,15 +151,6 @@ const SetPinModal = ({ buttonsCount, setButtonsCount }) => {
               Скасувати
             </Button>
           </Stack>
-
-          {/* <Button
-            onClick={async () => {
-              const res = await handleDeleteUser({ id: 54 });
-              console.log("res", res);
-            }}
-          >
-            Delete
-          </Button> */}
         </Stack>
       </form>
     </ModalCore>

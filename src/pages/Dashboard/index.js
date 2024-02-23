@@ -1,45 +1,23 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Box, Button, CircularProgress } from "@mui/material";
-import { gsap } from "gsap";
-import cx from "classnames";
-
+import React, { useEffect, useState } from "react";
+import { Button } from "@mui/material";
 import { useSelector } from "react-redux";
-import Home from "../Home";
-
-import { set, rm } from "lockr";
-import services from "../../core/services";
-
-import styles from "./styles.module.scss";
-import {
-  useGetMembersSelectsBySessionIdQuery,
-  useGetSessionByIdQuery,
-  usePostMembersSelectsMutation,
-} from "../../core/services/data/dataApi";
-import { Link, useNavigate } from "react-router-dom";
-import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/DashboardLayout";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 
 import lockButton from "../../assets/img/9-lock.png";
 import SetPinModal from "../../components/SetPinModal";
 
-const { setCurrentAttempt, setIsWon } = services;
+import styles from "./styles.module.scss";
 
 const Dashboard = () => {
   const [buttonsCount, setButtonsCount] = useState(null);
-  const [loading, setLoading] = useState(null);
-  const [winNumber, setWinNumber] = useState(null);
   const navigation = useNavigate();
 
-  const { isSession, isUser, currentAttempt, isWon, sessionsCount } =
-    useSelector((state) => state.data);
+  const { isSession, isUser } = useSelector((state) => state.data);
 
   useEffect(() => {
-    if (!isUser) {
-      navigation("/");
-    }
     if (isUser && isSession) {
-      console.log("isSession", isSession);
       navigation("/list");
     }
   }, [isSession, isUser, navigation]);
@@ -47,8 +25,6 @@ const Dashboard = () => {
   const handleClickSessionButton = (count) => {
     setButtonsCount(count);
   };
-
-  if (!isUser) return null;
 
   return (
     <DashboardLayout>

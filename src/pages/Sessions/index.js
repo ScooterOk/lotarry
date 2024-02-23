@@ -58,7 +58,7 @@ const Sessions = () => {
           },
         }}
       >
-        <Button LinkComponent={Link} to={"/list"}>
+        <Button LinkComponent={Link} to={"/dashboard"}>
           <IconArrowDirectionLeft />
         </Button>
         <h1>

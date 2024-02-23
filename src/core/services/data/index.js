@@ -2,29 +2,27 @@ import { createSlice } from "@reduxjs/toolkit";
 import { get } from "lockr";
 
 const initialState = {
-  isUser: get("isUser") || false,
-  isSession: get("isSession") || false,
+  token: get("_lt") || undefined,
+  isUser: get("_lu") || false,
+  isSession: get("_ls") || false,
   isGame: false,
-  currentAttempt: get("currentAttempt") || null,
-  gameData: get("gameData") || null,
-  isWon: get("isWon") || null,
-  sessionsCount: get("sessionsCount") || 0,
-  officeUser: get("officeUser") || null,
-  attemptsLimit: 700,
+  currentAttempt: get("_lca") || null,
+  isWon: get("_lw") || null,
+  sessionsCount: get("_lsc") || 0,
 };
 
 export const dataSlice = createSlice({
   name: "data",
   initialState,
   reducers: {
+    setToken: (state, { payload }) => {
+      state.token = payload;
+    },
     setIsUser: (state, { payload }) => {
       state.isUser = payload;
     },
     setIsSession: (state, { payload }) => {
       state.isSession = payload;
-    },
-    setGameData: (state, { payload }) => {
-      state.gameData = payload;
     },
     setCurrentAttempt: (state, { payload }) => {
       state.currentAttempt = payload;
@@ -34,9 +32,6 @@ export const dataSlice = createSlice({
     },
     setSessionsCount: (state, { payload }) => {
       state.sessionsCount = payload;
-    },
-    setOfficeUser: (state, { payload }) => {
-      state.officeUser = payload;
     },
   },
 });

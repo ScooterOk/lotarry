@@ -1,30 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { Backdrop, Box, Button, Stack, TextField } from "@mui/material";
+import React, { useEffect } from "react";
+import { Box } from "@mui/material";
 import bg from "../../assets/img/bg.webm";
-import ModalCore from "../../components/ModalCore";
-import LoadingButton from "../../components/LoadingButton";
 
-import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import services from "../../core/services";
-import { set } from "lockr";
+
 import { useSelector } from "react-redux";
-import { useGetAllUsersQuery } from "../../core/services/data/dataApi";
-import SignInModal from "../../components/SignInModal";
+
 import SignUpModal from "../../components/SignUpModal";
 
-const { REACT_APP_ADMIN_PASSWORD } = process.env;
-
-const { setIsSession, setGameData, setSessionsCount } = services;
-
-// Home page
 const SignUpPage = () => {
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const { sessionsCount, isSession } = useSelector((state) => state.data);
+  const { isSession } = useSelector((state) => state.data);
   const navigation = useNavigate();
-
-  const { data: usersList } = useGetAllUsersQuery();
 
   useEffect(() => {
     if (isSession) navigation("/list");
