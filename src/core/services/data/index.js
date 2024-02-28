@@ -9,6 +9,7 @@ const initialState = {
   currentAttempt: get("_lca") || null,
   isWon: get("_lw") || null,
   sessionsCount: get("_lsc") || 0,
+  memberSelectsList: null,
 };
 
 export const dataSlice = createSlice({
@@ -32,6 +33,9 @@ export const dataSlice = createSlice({
     },
     setSessionsCount: (state, { payload }) => {
       state.sessionsCount = payload;
+    },
+    setMemberSelectsList: (state, { payload }) => {
+      state.memberSelectsList = payload;
     },
   },
 });

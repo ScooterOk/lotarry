@@ -11,7 +11,8 @@ import servises from "../../core/services";
 
 gsap.registerPlugin(DrawSVGPlugin);
 
-const { setIsSession, setCurrentAttempt, setIsWon } = servises;
+const { setIsSession, setCurrentAttempt, setIsWon, setMemberSelectsList } =
+  servises;
 
 const Firework = ({ winNumber }) => {
   const svg = useRef();
@@ -44,6 +45,7 @@ const Firework = ({ winNumber }) => {
   }, []);
 
   const handleFinishSession = () => {
+    setMemberSelectsList(null);
     setCurrentAttempt(null);
     rm("_lca");
     setIsSession(null);
