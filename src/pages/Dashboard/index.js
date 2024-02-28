@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../../components/DashboardLayout";
@@ -29,6 +29,16 @@ const Dashboard = () => {
   return (
     <DashboardLayout>
       <div className={styles.wrapper}>
+        <Typography
+          fontSize={28}
+          fontWeight={700}
+          color={"#f6ce1d"}
+          component={"h2"}
+          textAlign={"center"}
+          mb={2}
+        >
+          Сейф -=1=-
+        </Typography>
         <Grid2
           container
           justifyContent={"center"}

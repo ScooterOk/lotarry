@@ -51,6 +51,8 @@ const Row = ({
     setisShowDeleteSession(true);
   };
 
+  console.log("row", row, sessionDetails);
+
   return (
     <>
       <TableRow>
@@ -71,7 +73,9 @@ const Row = ({
         </TableCell>
         <TableCell component="th" scope="row">
           <p>{row.number}</p>
-          <p>{row.id}</p>
+          <p>
+            [{row.winPositionsAmount}] - ({row.buttonsAmount})
+          </p>
         </TableCell>
         <TableCell>
           <Typography fontSize={13} fontWeight={700}>
@@ -135,6 +139,7 @@ const Row = ({
                 <TableHead>
                   <TableRow>
                     <TableCell>Спроба </TableCell>
+                    <TableCell>Дата</TableCell>
                     <TableCell>Імʼя</TableCell>
                     <TableCell>Телефон</TableCell>
                     <TableCell>Кількість спроб</TableCell>
@@ -155,6 +160,13 @@ const Row = ({
                       }}
                     >
                       <TableCell>{index + 1}</TableCell>
+                      <TableCell>
+                        <Typography fontSize={14} whiteSpace={"nowrap"}>
+                          {dayjs(attemp.attemptDatetime).format(
+                            "DD.MM.YYYY HH:mm"
+                          )}
+                        </Typography>
+                      </TableCell>
                       <TableCell>{attemp?.member?.name}</TableCell>
                       <TableCell>
                         <a
