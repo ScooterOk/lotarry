@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Box, Button, CircularProgress } from "@mui/material";
 import { gsap } from "gsap";
 import cx from "classnames";
@@ -65,62 +71,30 @@ const List = () => {
     }
   }, [isSession, navigation]);
 
+  const curtainAnimation = useCallback(
+    (open) => {
+      if (!grid.current || !session) return;
+      const scale = grid.current.querySelector(".lock_l")?._gsap?.scaleX;
+      if (open && scale < 1) return;
+      gsap.to(grid.current.querySelectorAll(".lock_l"), {
+        duration: 1.5,
+        scaleX: open ? 0 : 1,
+        ease: open ? "power2.in" : "power2.out",
+        delay: 0,
+      });
+      gsap.to(grid.current.querySelectorAll(".lock_r"), {
+        duration: 1.5,
+        scaleX: open ? 0 : 1,
+        ease: open ? "power2.in" : "power2.out",
+        delay: 0,
+      });
+    },
+    [session]
+  );
+
   useEffect(() => {
-    if (!grid.current) return;
-    gsap.to(grid.current.querySelectorAll(".lock_l"), {
-      duration: 1.5,
-      left: !!currentAttempt && !!session ? "-100%" : "0%",
-      ease: !!currentAttempt && !!session ? "power3.in" : "power3.out",
-      delay: 0,
-    });
-    gsap.to(grid.current.querySelectorAll(".lock_r"), {
-      duration: 1.5,
-      right: !!currentAttempt && !!session ? "-100%" : "0%",
-      ease: !!currentAttempt && !!session ? "power3.in" : "power3.out",
-      delay: 0,
-    });
-
-    /*gsap.to(grid.current.querySelectorAll("section:not(.cliced) button"), {
-      duration: 3,
-      stagger: {
-        grid: "auto",
-        from: "random",
-        amount: 1,
-      },
-      opacity: 0.75,
-      ease: "power4.out",
-      background: "#000000",
-    });*/
-
-    /*gsap.from(grid.current.querySelectorAll("section:not(.cliced)"), {
-      duration: 1.5,
-      stagger: {
-        grid: "auto",
-        from: "random",
-        amount: 1,
-      },
-      opacity: 0,
-      scale: 0.1,
-      ease: "power4.out",
-    });*/
-
-    /* TRANSFUSION ANIMATION*/
-    /*gsap.to(grid.current.querySelectorAll("section"), {
-      duration: 2,
-      stagger: {
-        each: 0.2,
-        grid: "auto",
-        repeat: -1,
-        from: "start",
-        yoyo: true,
-      },
-      scale: 1.2,
-      opacity: 0.75,
-      repeat: -1,
-      repeatDelay: 5,
-      ease: "power4.in",
-    });*/
-  }, [currentAttempt, session]);
+    curtainAnimation(!!currentAttempt);
+  }, [currentAttempt, curtainAnimation]);
 
   const handleWin = async () => {
     gsap.to(grid.current.querySelectorAll("section.won"), {
