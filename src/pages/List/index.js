@@ -196,7 +196,7 @@ const List = () => {
 
     if (isAttemptUsed && !currentAttemptData.isWin) {
       setCurrentAttempt(null);
-      rm("currentAttempt");
+      rm("_lca");
     }
 
     setLoading(null);

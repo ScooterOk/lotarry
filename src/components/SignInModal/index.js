@@ -28,7 +28,7 @@ const SignInModal = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      username: "",
+      userEmail: "",
       password: "",
     },
   });
@@ -151,13 +151,13 @@ const SignInModal = () => {
             render={({ field }) => (
               <TextField
                 {...field}
-                error={!!errors.email}
+                error={!!errors.userEmail}
                 label={"Пошта"}
                 color={"primary"}
                 fullWidth
                 variant={"outlined"}
                 type={"email"}
-                helperText={!!errors.email && errors?.email?.message}
+                helperText={!!errors.userEmail && errors?.userEmail?.message}
                 sx={{
                   mb: 2,
                 }}

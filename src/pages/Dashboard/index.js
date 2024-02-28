@@ -46,19 +46,28 @@ const Dashboard = () => {
             </Button>
           </Grid2>
           <Grid2>
-            <Button className={styles.button}>
+            <Button
+              className={styles.button}
+              onClick={() => handleClickSessionButton(500)}
+            >
               <img src={lockButton} alt="button" />
               <b>500</b>
             </Button>
           </Grid2>
           <Grid2>
-            <Button className={styles.button}>
+            <Button
+              className={styles.button}
+              onClick={() => handleClickSessionButton(750)}
+            >
               <img src={lockButton} alt="button" />
               <b>750</b>
             </Button>
           </Grid2>
           <Grid2>
-            <Button className={styles.button}>
+            <Button
+              className={styles.button}
+              onClick={() => handleClickSessionButton(1000)}
+            >
               <img src={lockButton} alt="button" />
               <b>1000</b>
             </Button>
