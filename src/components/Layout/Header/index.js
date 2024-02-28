@@ -9,14 +9,15 @@ import { useSelector } from "react-redux";
 import logo_safe_box from "../../../assets/img/logo_safe_box.png";
 import {
   useGetAttemptByIdQuery,
-  useGetMembersSelectsBySessionIdQuery,
   useGetSessionByIdQuery,
 } from "../../../core/services/data/dataApi";
 import md5 from "md5";
 
 const Header = () => {
   const [isFormShow, setIsFormShow] = useState(false);
-  const { isSession, currentAttempt } = useSelector((state) => state.data);
+  const { isSession, currentAttempt, memberSelectsList } = useSelector(
+    (state) => state.data
+  );
 
   const { data: session } = useGetSessionByIdQuery(isSession, {
     skip: !isSession,
@@ -25,9 +26,6 @@ const Header = () => {
   const { data: attempt } = useGetAttemptByIdQuery(currentAttempt, {
     skip: !currentAttempt,
   });
-
-  const { data: memberSelectsList } =
-    useGetMembersSelectsBySessionIdQuery(isSession);
 
   const commonAttemps = useMemo(() => {
     return session?.buttonsAmount - (memberSelectsList?.length || 0);

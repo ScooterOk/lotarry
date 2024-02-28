@@ -24,25 +24,30 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
-const { setCurrentAttempt, setIsWon } = services;
+const { setCurrentAttempt, setIsWon, setMemberSelectsList } = services;
 
 const List = () => {
   const [loading, setLoading] = useState(null);
   const [winNumber, setWinNumber] = useState(null);
+
   const navigation = useNavigate();
 
-  const { isSession, currentAttempt, isWon, sessionsCount } = useSelector(
-    (state) => state.data
-  );
+  const { isSession, currentAttempt, isWon, sessionsCount, memberSelectsList } =
+    useSelector((state) => state.data);
 
   const { data: session } = useGetSessionByIdQuery(isSession, {
     skip: !isSession,
   });
 
-  const { data: memberSelectsList, refetch: memberSelectsListRefetch } =
-    useGetMembersSelectsBySessionIdQuery(isSession, {
-      skip: !isSession,
-    });
+  const { data: memberSelectsData } = useGetMembersSelectsBySessionIdQuery(
+    isSession,
+    { skip: !isSession }
+  );
+
+  useEffect(() => {
+    if (!memberSelectsList && !!memberSelectsData)
+      setMemberSelectsList(memberSelectsData);
+  }, [memberSelectsData, memberSelectsList]);
 
   const [addNewMemberSelect] = usePostMembersSelectsMutation();
 
@@ -117,22 +122,9 @@ const List = () => {
         // axis: "x",
       },
       opacity: 0,
-      // scale: 0.1,
       y: 50,
       ease: "power4.in",
     });
-
-    // const body = {
-    //   finishTime: dayjs().toISOString(),
-    //   winMember: {
-    //     ...currentMember,
-    //   },
-    //   office: session?.office,
-    //   number: session?.number,
-    //   startTime: session?.startTime,
-    //   winPosition: session?.winPosition,
-    // };
-    // await editSession({ id: session?.id, body });
   };
 
   const handleClickButton = async (wn) => {
@@ -150,29 +142,27 @@ const List = () => {
     };
 
     const select = await addNewMemberSelect({ body });
-    const response = await memberSelectsListRefetch();
+    const listResult = !!memberSelectsList
+      ? [...memberSelectsList, select?.data]
+      : [select?.data];
 
-    const currentAttemptData = response.data.find(
-      (item) => item.id === select?.data?.id
-    );
+    setMemberSelectsList(listResult);
 
     const selectedAmount =
-      response.data.filter((item) => item.attempt.id === currentAttempt)
-        ?.length || 0;
-    const attemptsAllowed = currentAttemptData?.attempt?.attemptsAllowed;
-
+      listResult.filter((item) => item.attempt.id === currentAttempt)?.length ||
+      0;
+    const attemptsAllowed = select.data?.attempt?.attemptsAllowed;
     const isAttemptUsed = selectedAmount >= attemptsAllowed;
 
-    if (currentAttemptData.isWin) {
+    if (select?.data?.isWin) {
       setWinNumber(wn);
-      handleWin();
+      setTimeout(handleWin, 300);
     }
 
-    if (isAttemptUsed && !currentAttemptData.isWin) {
+    if (isAttemptUsed && !select?.data?.isWin) {
       setCurrentAttempt(null);
       rm("_lca");
     }
-
     setLoading(null);
   };
 
