@@ -8,8 +8,8 @@ const logout = () => {
   rm("_lt");
   store.dispatch(actions.setIsUser(), null);
   rm("_lu");
-  store.dispatch(actions.setIsSession(), null);
-  rm("_ls");
+  // store.dispatch(actions.setIsSession(), null);
+  // rm("_ls");
 };
 
 export default logout;

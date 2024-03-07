@@ -51,8 +51,6 @@ const Row = ({
     setisShowDeleteSession(true);
   };
 
-  console.log("row", row, sessionDetails);
-
   return (
     <>
       <TableRow>
