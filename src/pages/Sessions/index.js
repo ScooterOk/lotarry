@@ -22,12 +22,15 @@ import Row from "./Row";
 import { IconArrowDirectionLeft } from "../../components/icons";
 import { Link } from "react-router-dom";
 import DeleteSessionModal from "./DeleteSessionModal";
+import { useSelector } from "react-redux";
 
 const Sessions = () => {
   const [options, setOptions] = useState({
     page: 0,
     size: 10,
   });
+
+  const { isSession } = useSelector((state) => state.data);
 
   const {
     data: sessionsList,
@@ -58,7 +61,7 @@ const Sessions = () => {
           },
         }}
       >
-        <Button LinkComponent={Link} to={"/dashboard"}>
+        <Button LinkComponent={Link} to={isSession ? "/list" : "/dashboard"}>
           <IconArrowDirectionLeft />
         </Button>
         <h1>
