@@ -8,12 +8,17 @@ import SignInModal from "../../components/SignInModal";
 
 // Home page
 const Home = () => {
-  const { isUser } = useSelector((state) => state.data);
+  const { isUser, isSession } = useSelector((state) => state.data);
   const navigation = useNavigate();
 
   useEffect(() => {
-    if (isUser) navigation("/dashboard");
-  }, [isUser, navigation]);
+    if (!isUser) return;
+    if (isSession) {
+      navigation("/list");
+    } else {
+      navigation("/dashboard");
+    }
+  }, [isUser, isSession, navigation]);
 
   return (
     <Box
