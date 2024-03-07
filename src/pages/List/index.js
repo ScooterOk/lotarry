@@ -35,7 +35,7 @@ const List = () => {
   const { isSession, currentAttempt, isWon, sessionsCount, memberSelectsList } =
     useSelector((state) => state.data);
 
-  const { data: session } = useGetSessionByIdQuery(isSession, {
+  const { data: session, ...rest } = useGetSessionByIdQuery(isSession, {
     skip: !isSession,
   });
 
@@ -142,7 +142,9 @@ const List = () => {
     };
 
     const select = await addNewMemberSelect({ body });
-    const listResult = !!memberSelectsList
+    const listResult = select.error
+      ? memberSelectsList
+      : !!memberSelectsList
       ? [...memberSelectsList, select?.data]
       : [select?.data];
 
