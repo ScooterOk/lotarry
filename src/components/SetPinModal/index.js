@@ -16,7 +16,7 @@ import InputMask from "react-input-mask";
 
 const { setSessionsCount, setIsSession } = servises;
 
-const SetPinModal = ({ buttonsCount, setButtonsCount }) => {
+const SetPinModal = ({ gameParams, setGameParams }) => {
   const [loading, setLoading] = useState(false);
   const { sessionsCount, isUser } = useSelector((state) => state.data);
   const { data: userData } = useGetUserByIdQuery(
@@ -45,9 +45,9 @@ const SetPinModal = ({ buttonsCount, setButtonsCount }) => {
     const body = {
       office: userData.office,
       startTime: dayjs().toISOString(),
-      buttonsAmount: buttonsCount,
+      buttonsAmount: gameParams?.buttonCount,
       number: number.toString().padStart(4, "0"),
-      winPositionsAmount: 1,
+      winPositionsAmount: gameParams?.winPositionCount,
       comment: md5(formData.comment),
       sessionStatus: "ACTIVE",
       sessionType: "WINNERS",
@@ -59,11 +59,11 @@ const SetPinModal = ({ buttonsCount, setButtonsCount }) => {
     setIsSession(res.data.id);
     set("_ls", res.data.id);
     setLoading(false);
-    setButtonsCount(null);
+    setGameParams(null);
   };
 
   return (
-    <ModalCore open={!!buttonsCount} handleClose={setButtonsCount} width={600}>
+    <ModalCore open={!!gameParams} handleClose={setGameParams} width={600}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack
           direction={"column"}
@@ -146,7 +146,7 @@ const SetPinModal = ({ buttonsCount, setButtonsCount }) => {
             <Button
               variant="outlined"
               fullWidth
-              onClick={() => setButtonsCount(null)}
+              onClick={() => setGameParams(null)}
             >
               Скасувати
             </Button>
