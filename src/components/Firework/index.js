@@ -14,7 +14,7 @@ gsap.registerPlugin(DrawSVGPlugin);
 const { setIsSession, setCurrentAttempt, setIsWon, setMemberSelectsList } =
   servises;
 
-const Firework = ({ winNumber }) => {
+const Firework = ({ winNumber, winPositionsAmount, gameData }) => {
   const svg = useRef();
   const navigate = useNavigate();
 
@@ -45,14 +45,19 @@ const Firework = ({ winNumber }) => {
   }, []);
 
   const handleFinishSession = () => {
-    setMemberSelectsList(null);
+    const isLast =
+      gameData.filter((item) => !!item.won).length === winPositionsAmount;
+
     setCurrentAttempt(null);
     rm("_lca");
-    setIsSession(null);
-    rm("_ls", null);
     setIsWon(null);
     rm("_lw", null);
-    navigate("/dashboard");
+    if (isLast) {
+      setMemberSelectsList(null);
+      setIsSession(null);
+      rm("_ls", null);
+      navigate("/dashboard");
+    }
   };
 
   return (

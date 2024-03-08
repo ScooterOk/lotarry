@@ -35,7 +35,7 @@ const List = () => {
   const { isSession, currentAttempt, isWon, sessionsCount, memberSelectsList } =
     useSelector((state) => state.data);
 
-  const { data: session, ...rest } = useGetSessionByIdQuery(isSession, {
+  const { data: session } = useGetSessionByIdQuery(isSession, {
     skip: !isSession,
   });
 
@@ -183,7 +183,11 @@ const List = () => {
         }}
       >
         {isWon ? (
-          <Firework winNumber={winNumber} />
+          <Firework
+            winNumber={winNumber}
+            winPositionsAmount={session?.winPositionsAmount}
+            gameData={gameData}
+          />
         ) : (
           <Box
             ref={grid}
