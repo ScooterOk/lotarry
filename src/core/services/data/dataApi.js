@@ -1,6 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// const { NEXT_PUBLIC_SERVER_API_URL } = process.env;
+const { REACT_APP_API_URL_DEV, REACT_APP_API_URL_PROD } = process.env;
+
+console.log("REACT_APP_API_URL", process.env);
 
 /*export const productsApi = createApi({
   reducerPath: "products",
@@ -14,7 +16,10 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 });*/
 
 // const baseUrl = "https://logo01001-559a553141ed.herokuapp.com/api";
-const baseUrl = "https://loto1001-jdzqis5eja-ew.a.run.app/api";
+const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? REACT_APP_API_URL_PROD
+    : REACT_APP_API_URL_DEV;
 
 const dataApi = createApi({
   reducerPath: "dataApi",
