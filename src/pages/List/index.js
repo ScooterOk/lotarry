@@ -78,16 +78,16 @@ const List = () => {
 
   const curtainAnimation = useCallback(
     (open) => {
-      if (!grid.current || !session) return;
-      const scale = grid.current.querySelector(".lock_l")?._gsap?.scaleX;
+      if (!main.current || !session) return;
+      const scale = main.current.querySelector(".lock_l")?._gsap?.scaleX;
       if (open && scale < 1) return;
-      gsap.to(grid.current.querySelectorAll(".lock_l"), {
+      gsap.to(main.current.querySelectorAll(".lock_l"), {
         duration: 1.5,
         scaleX: open ? 0 : 1,
         ease: open ? "power2.in" : "power2.out",
         delay: 0,
       });
-      gsap.to(grid.current.querySelectorAll(".lock_r"), {
+      gsap.to(main.current.querySelectorAll(".lock_r"), {
         duration: 1.5,
         scaleX: open ? 0 : 1,
         ease: open ? "power2.in" : "power2.out",
@@ -182,6 +182,8 @@ const List = () => {
             : "linear-gradient(185deg,  rgba(51, 51, 51, 0.75) 0%, rgba(27, 27, 27, 0.75) 100%)",
         }}
       >
+        <Box className={cx("lock_l", styles.lock_l)} />
+        <Box className={cx("lock_r", styles.lock_r)} />
         {isWon ? (
           <Firework
             winNumber={winNumber}
@@ -206,8 +208,8 @@ const List = () => {
             }}
           >
             {/*<div className={styles.cut} />*/}
-            <Box className={cx("lock_l", styles.lock_l)} />
-            <Box className={cx("lock_r", styles.lock_r)} />
+            {/* <Box className={cx("lock_l", styles.lock_l)} />
+            <Box className={cx("lock_r", styles.lock_r)} /> */}
             {gameData?.map((item) => (
               <section
                 key={`key_list-${item.name}`}

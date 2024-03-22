@@ -44,15 +44,17 @@ const Firework = ({ winNumber, winPositionsAmount, gameData }) => {
     });
   }, []);
 
-  const handleFinishSession = () => {
+  const handleContinue = () => {
     const isLast =
       gameData.filter((item) => !!item.won).length === winPositionsAmount;
 
-    setCurrentAttempt(null);
-    rm("_lca");
+    // setCurrentAttempt(null);
+    // rm("_lca");
     setIsWon(null);
     rm("_lw", null);
     if (isLast) {
+      setCurrentAttempt(null);
+      rm("_lca");
       setMemberSelectsList(null);
       setIsSession(null);
       rm("_ls", null);
@@ -134,7 +136,7 @@ const Firework = ({ winNumber, winPositionsAmount, gameData }) => {
           size={"large"}
           color={"primary"}
           variant={"contained"}
-          onClick={handleFinishSession}
+          onClick={handleContinue}
           // component={Link}
           // to={"/"}
         >
