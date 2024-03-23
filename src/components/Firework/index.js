@@ -64,8 +64,6 @@ const Firework = ({ winNumber, winPositionsAmount, gameData }) => {
   const handleContinue = () => {
     const isLast =
       gameData.filter((item) => !!item.won).length === winPositionsAmount;
-
-    console.log("selectedCount", selectedCount);
     setIsWon(null);
     rm("_lw", null);
     if (!selectedCount) {

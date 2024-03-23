@@ -47,8 +47,6 @@ const List = () => {
     { skip: !isSession }
   );
 
-  console.log("session", session);
-
   useEffect(() => {
     if (!memberSelectsList && !!memberSelectsData)
       setMemberSelectsList(memberSelectsData);
@@ -160,8 +158,6 @@ const List = () => {
 
     setMemberSelectsList(listResult);
 
-    console.log("listResult", listResult, currentAttempt);
-
     const selectedAmount =
       listResult.filter((item) => item.attempt.id === currentAttempt)?.length ||
       0;
@@ -179,11 +175,6 @@ const List = () => {
     }
     setLoading(null);
   };
-
-  console.log(
-    "Array.from({ length: wonCounter }, (_, index) => index + 1)",
-    Array.from({ length: wonCounter }, (_, index) => index + 1)
-  );
 
   return (
     <Layout>
