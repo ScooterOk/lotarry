@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Box, Button, CircularProgress } from "@mui/material";
+import { Box, Button, CircularProgress, Stack } from "@mui/material";
 import { gsap } from "gsap";
 import cx from "classnames";
 import Layout from "../../components/Layout";
@@ -23,6 +23,9 @@ import {
 } from "../../core/services/data/dataApi";
 import { Link, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import StarIcon from "@mui/icons-material/Star";
+import win_icon from "../../assets/img/win_icon_2.png";
 
 const { setCurrentAttempt, setIsWon, setMemberSelectsList } = services;
 
@@ -43,6 +46,8 @@ const List = () => {
     isSession,
     { skip: !isSession }
   );
+
+  console.log("session", session);
 
   useEffect(() => {
     if (!memberSelectsList && !!memberSelectsData)
@@ -69,6 +74,11 @@ const List = () => {
 
   const grid = useRef();
   const main = useRef();
+
+  const wonCounter = useMemo(
+    () => gameData?.filter((item) => item.won)?.length,
+    [gameData]
+  );
 
   useEffect(() => {
     if (!isSession) {
@@ -170,11 +180,16 @@ const List = () => {
     setLoading(null);
   };
 
+  console.log(
+    "Array.from({ length: wonCounter }, (_, index) => index + 1)",
+    Array.from({ length: wonCounter }, (_, index) => index + 1)
+  );
+
   return (
     <Layout>
       <Box
         ref={main}
-        pt={8}
+        pt={4}
         pb={3}
         minHeight={1}
         position={"relative"}
@@ -186,6 +201,27 @@ const List = () => {
       >
         <Box className={cx("lock_l", styles.lock_l)} />
         <Box className={cx("lock_r", styles.lock_r)} />
+        {session?.winPositionsAmount > 1 && (
+          <Stack
+            direction={"row"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            spacing={3}
+            mb={3}
+            color={"#ff0000"}
+            className={cx(
+              styles.won_counter,
+              wonCounter && styles[`won_${wonCounter}`]
+            )}
+          >
+            {Array.from(
+              { length: session?.winPositionsAmount },
+              (_, index) => index + 1
+            ).map((item) => (
+              <img key={`won_icon_${item}`} src={win_icon} alt="win" />
+            ))}
+          </Stack>
+        )}
         {isWon ? (
           <Firework
             winNumber={winNumber}
