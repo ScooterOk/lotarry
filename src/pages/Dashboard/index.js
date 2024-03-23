@@ -6,12 +6,15 @@ import DashboardLayout from "../../components/DashboardLayout";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 
 import lockButton from "../../assets/img/9-lock.png";
+import orangeButton from "../../assets/img/orange-lock.png";
+
 import SetPinModal from "../../components/SetPinModal";
 
 import star_1 from "../../assets/img/11111.png";
-import star_3 from "../../assets/img/333.png";
+import star_3 from "../../assets/img/3_orange_star.png";
 
 import styles from "./styles.module.scss";
+import cx from "classnames";
 
 const Dashboard = () => {
   const [gameParams, setGameParams] = useState(null);
@@ -59,9 +62,9 @@ const Dashboard = () => {
             >
               <img src={lockButton} alt="button" />
               <b>DEMO</b>
-              <i>
+              {/* <i>
                 <img src={star_1} alt="star" />
-              </i>
+              </i> */}
             </Button>
           </Grid2>
           <Grid2>
@@ -71,9 +74,9 @@ const Dashboard = () => {
             >
               <img src={lockButton} alt="button" />
               <b>500</b>
-              <i>
+              {/* <i>
                 <img src={star_1} alt="star" />
-              </i>
+              </i> */}
             </Button>
           </Grid2>
           <Grid2>
@@ -83,9 +86,9 @@ const Dashboard = () => {
             >
               <img src={lockButton} alt="button" />
               <b>750</b>
-              <i>
+              {/* <i>
                 <img src={star_1} alt="star" />
-              </i>
+              </i> */}
             </Button>
           </Grid2>
           <Grid2>
@@ -95,9 +98,9 @@ const Dashboard = () => {
             >
               <img src={lockButton} alt="button" />
               <b>1000</b>
-              <i>
+              {/* <i>
                 <img src={star_1} alt="star" />
-              </i>
+              </i> */}
             </Button>
           </Grid2>
         </Grid2>
@@ -111,10 +114,10 @@ const Dashboard = () => {
         >
           <Grid2>
             <Button
-              className={styles.button}
+              className={cx(styles.button, styles.orange)}
               onClick={() => handleClickSessionButton(20, 3)}
             >
-              <img src={lockButton} alt="button" />
+              <img src={orangeButton} alt="button" />
               <b>DEMO</b>
               <i>
                 <img src={star_3} alt="star" />
@@ -123,10 +126,10 @@ const Dashboard = () => {
           </Grid2>
           <Grid2>
             <Button
-              className={styles.button}
+              className={cx(styles.button, styles.orange)}
               onClick={() => handleClickSessionButton(500, 3)}
             >
-              <img src={lockButton} alt="button" />
+              <img src={orangeButton} alt="button" />
               <b>500</b>
               <i>
                 <img src={star_3} alt="star" />
@@ -135,10 +138,10 @@ const Dashboard = () => {
           </Grid2>
           <Grid2>
             <Button
-              className={styles.button}
+              className={cx(styles.button, styles.orange)}
               onClick={() => handleClickSessionButton(750, 3)}
             >
-              <img src={lockButton} alt="button" />
+              <img src={orangeButton} alt="button" />
               <b>750</b>
               <i>
                 <img src={star_3} alt="star" />
@@ -147,10 +150,10 @@ const Dashboard = () => {
           </Grid2>
           <Grid2>
             <Button
-              className={styles.button}
+              className={cx(styles.button, styles.orange)}
               onClick={() => handleClickSessionButton(1000, 3)}
             >
-              <img src={lockButton} alt="button" />
+              <img src={orangeButton} alt="button" />
               <b>1000</b>
               <i>
                 <img src={star_3} alt="star" />
