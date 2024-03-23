@@ -17,6 +17,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import Row from "./Row";
 import { IconArrowDirectionLeft } from "../../components/icons";
@@ -37,6 +38,7 @@ const Sessions = () => {
     refetch,
     isFetching,
   } = useGetSessionsListQuery(options);
+
   const [isShowDeleteSession, setisShowDeleteSession] = useState(false);
   const [deleteSession, setDeleteSession] = useState(523);
 
@@ -66,10 +68,10 @@ const Sessions = () => {
         </Button>
         <h1>
           Сесії (
-          {sessionsList ? (
-            sessionsList?.totalItems
-          ) : (
+          {isFetching ? (
             <CircularProgress size={20} color="inherit" />
+          ) : (
+            sessionsList?.totalItems || 0
           )}
           )
         </h1>
@@ -123,6 +125,13 @@ const Sessions = () => {
             </TableRow>
           </TableHead>
           <TableBody>
+            {sessionsList === null && (
+              <TableRow>
+                <TableCell colSpan={7} align="center">
+                  <Typography fontSize={24}>Сесій ще нема</Typography>
+                </TableCell>
+              </TableRow>
+            )}
             {sessionsList?.data?.map((row) => (
               <Row
                 key={row.id}
