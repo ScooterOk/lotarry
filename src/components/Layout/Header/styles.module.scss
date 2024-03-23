@@ -91,8 +91,7 @@
     // animation-duration: 5s;
     // animation-name: slidein;
     animation: move-logo 2.5s infinite ease-in-out;*/
-    display: flex;
-    align-items: center;
+    width: 33.3333%;
     .logo_wrapper {
       position: relative;
       line-height: 1;
@@ -115,7 +114,14 @@
   .counter {
     text-align: center;
     color: #fff;
-    width: 160px;
+    width: 33.333%;
+    & > div {
+      width: 160px;
+      margin: auto;
+      &.right {
+        margin-right: initial;
+      }
+    }
 
     b {
       display: block;
@@ -132,7 +138,11 @@
     }
   }
   .form {
-    width: 300px;
+    width: 33.3333%;
+    form {
+      width: 300px;
+      margin-left: auto;
+    }
   }
 }
 

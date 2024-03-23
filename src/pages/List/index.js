@@ -150,6 +150,8 @@ const List = () => {
 
     setMemberSelectsList(listResult);
 
+    console.log("listResult", listResult, currentAttempt);
+
     const selectedAmount =
       listResult.filter((item) => item.attempt.id === currentAttempt)?.length ||
       0;

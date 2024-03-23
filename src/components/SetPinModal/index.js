@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import ModalCore from "../ModalCore";
 import { Button, Stack, TextField } from "@mui/material";
@@ -106,7 +106,7 @@ const SetPinModal = ({ gameParams, setGameParams }) => {
               >
                 {() => (
                   <TextField
-                    // {...field}
+                    autoFocus
                     error={!!errors.comment}
                     label={"Пінкод"}
                     color={"primary"}

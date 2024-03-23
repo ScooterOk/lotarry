@@ -64,14 +64,18 @@ const Header = () => {
         </div>
         {!!commonAttemps && (
           <div className={styles.counter}>
-            <b>Залишилося спроб:</b>
-            <span>{commonAttemps}</span>
+            <div>
+              <b>Залишилося спроб:</b>
+              <span>{commonAttemps}</span>
+            </div>
           </div>
         )}
         {!!currentAttempt ? (
           <div className={styles.counter}>
-            <b>Залишилося спроб:</b>
-            <span>{selectedCount || "..."}</span>
+            <div className={styles.right}>
+              <b>Залишилося спроб:</b>
+              <span>{selectedCount || "..."}</span>
+            </div>
           </div>
         ) : (
           <div className={styles.form}>

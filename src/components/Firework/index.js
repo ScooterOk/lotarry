@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import DrawSVGPlugin from "gsap/DrawSVGPlugin";
 
@@ -8,6 +8,8 @@ import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { rm } from "lockr";
 import servises from "../../core/services";
+import { useGetAttemptByIdQuery } from "../../core/services/data/dataApi";
+import { useSelector } from "react-redux";
 
 gsap.registerPlugin(DrawSVGPlugin);
 
@@ -17,6 +19,21 @@ const { setIsSession, setCurrentAttempt, setIsWon, setMemberSelectsList } =
 const Firework = ({ winNumber, winPositionsAmount, gameData }) => {
   const svg = useRef();
   const navigate = useNavigate();
+
+  const { currentAttempt, memberSelectsList } = useSelector(
+    (state) => state.data
+  );
+
+  const { data: attempt } = useGetAttemptByIdQuery(currentAttempt, {
+    skip: !currentAttempt,
+  });
+
+  const selectedCount = useMemo(() => {
+    const selected =
+      memberSelectsList?.filter((item) => item.attempt.id === currentAttempt)
+        ?.length || 0;
+    return attempt?.attemptsAllowed - selected;
+  }, [attempt, currentAttempt, memberSelectsList]);
 
   useEffect(() => {
     gsap.from(
@@ -48,10 +65,13 @@ const Firework = ({ winNumber, winPositionsAmount, gameData }) => {
     const isLast =
       gameData.filter((item) => !!item.won).length === winPositionsAmount;
 
-    // setCurrentAttempt(null);
-    // rm("_lca");
+    console.log("selectedCount", selectedCount);
     setIsWon(null);
     rm("_lw", null);
+    if (!selectedCount) {
+      setCurrentAttempt(null);
+      rm("_lca");
+    }
     if (isLast) {
       setCurrentAttempt(null);
       rm("_lca");
